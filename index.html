@@ -738,16 +738,17 @@ window.__saveMember=async function(){
   const password = genPassword(nom, naissance);
   const saveBtn=document.getElementById("mbrSaveBtn");
   saveBtn.disabled=true; saveBtn.textContent="Création du compte…";
+  let cred=null, sAuth=null;
   try{
-    const sAuth = getSecondaryAuth();
-    const cred = await sAuth.createUserWithEmailAndPassword(email, password);
+    sAuth = getSecondaryAuth();
+    cred = await sAuth.createUserWithEmailAndPassword(email, password);
     const uid = cred.user.uid;
-    await sAuth.signOut();
     const membre={nom,prenom,naissance,email,tel,multisports:multi,handloisir:hand,role};
     await db.collection("membres").doc(uid).set(membre);
     const idx = await loadPublicIndex();
     idx.push({uid,nom,prenom,email});
     await savePublicIndex(idx);
+    await sAuth.signOut();
     MBR_LIST.push(Object.assign({id:uid},membre));
     renderMembersList();
     document.getElementById("mbrPwBox").innerHTML =
@@ -756,7 +757,15 @@ window.__saveMember=async function(){
     document.getElementById("m-multi").checked=false; document.getElementById("m-hand").checked=false; document.getElementById("m-role").value="membre";
   }catch(e){
     console.error(e);
-    errBox.textContent = (e && e.code==="auth/email-already-in-use") ? "Cet email a déjà un compte." : "Échec de la création du compte.";
+    if(cred){
+      // La création du compte de connexion a réussi mais une étape suivante a échoué :
+      // on annule le compte fraîchement créé pour ne jamais laisser de "compte fantôme".
+      try{ await cred.user.delete(); }catch(e2){ console.error("rollback échoué",e2); }
+      try{ if(sAuth) await sAuth.signOut(); }catch(e3){}
+    }
+    errBox.textContent = (e && e.code==="auth/email-already-in-use")
+      ? "Cet email a déjà un compte."
+      : "Échec de la création : " + (e && e.message ? e.message : "erreur inconnue");
   }
   saveBtn.disabled=false; saveBtn.textContent="Ajouter le membre";
 };
