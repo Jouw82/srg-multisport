@@ -13,12 +13,29 @@
   --ink:#16232E; --ink-soft:#5D6B75; --ink-faint:#93A0A8;
   --line:#D6D6D6; --line-strong:#C2C2C2;
   --flame:#153AA3; --flame-soft:#E4EAF9;
+  --highlight:#E9531F; --highlight-soft:#FCEAE0;
   --sea:#0E7C86; --sea-soft:#E3F1F0;
   --gold:#F0A94E; --gold-soft:#FDF0DE;
   --green:#1E9E52; --green-soft:#E4F4E7; --green-line:#B7E0C0; --green-ink:#1C7A40;
   --vac:#C7C7C7; --vac-ink:#4A4F54;
   --shadow:0 1px 2px rgba(22,35,46,.04), 0 12px 30px -18px rgba(22,35,46,.25);
 }
+[data-theme="dark"]{
+  --paper:#15181B; --card:#1E2226;
+  --ink:#ECEDEE; --ink-soft:#A9B2B8; --ink-faint:#6B747A;
+  --line:#2B3034; --line-strong:#3A4045;
+  --flame:#5D8AFF; --flame-soft:rgba(93,138,255,.16);
+  --highlight:#FF7A47; --highlight-soft:rgba(255,122,71,.16);
+  --sea:#3FCAD4; --sea-soft:rgba(63,202,212,.14);
+  --gold:#F3B968; --gold-soft:rgba(243,185,104,.14);
+  --green:#39C978; --green-soft:rgba(57,201,120,.14); --green-line:rgba(57,201,120,.35); --green-ink:#6FE39B;
+  --vac:#2C2F33; --vac-ink:#9BA2A7;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px -18px rgba(0,0,0,.6);
+}
+[data-theme="dark"] body{background:var(--paper)}
+[data-theme="dark"] .topbar{background:#0E1013}
+[data-theme="dark"] .edit{background:var(--sea-soft)}
+[data-theme="dark"] .lede.editable{background:var(--sea-soft)}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0; background:var(--paper); color:var(--ink);
@@ -29,11 +46,10 @@ a{color:var(--sea)}
 /* ---------- TOPBAR ---------- */
 .topbar{position:sticky; top:0; z-index:60; background:var(--ink); color:#fff}
 .topbar-wrap{max-width:1040px; margin:0 auto; padding:7px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; min-height:40px}
-.tb-left{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
-.tb-brand{font-family:"Archivo"; font-weight:800; font-size:12.5px; letter-spacing:.03em; display:flex; align-items:center; gap:7px}
+.tb-brand{font-family:"Archivo"; font-weight:800; font-size:12.5px; letter-spacing:.03em; display:flex; align-items:center; gap:7px; flex:0 0 auto}
 .tb-brand .b{background:var(--flame); padding:3px 7px; border-radius:5px; font-size:10.5px}
 .tb-brand span{font-weight:600; color:rgba(255,255,255,.65); font-size:11.5px}
-.tb-links{display:flex; align-items:center; gap:6px; flex-wrap:wrap}
+.tb-links{display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; flex:1 1 auto}
 .tb-link{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:#fff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.22); border-radius:999px; padding:4px 10px 4px 8px; text-decoration:none; cursor:pointer; font-family:inherit}
 .tb-link:hover{background:rgba(255,255,255,.17)}
 .tb-link svg{width:12px; height:12px; flex:none}
@@ -42,6 +58,8 @@ a{color:var(--sea)}
 .modeBtn:hover{background:rgba(255,255,255,.16)}
 .modeBtn .dotw{width:6px; height:6px; border-radius:50%; background:#93A0A8}
 .modeBtn.on{background:#1E9E52; border-color:#1E9E52; color:#fff}
+.themeBtn{font-size:15px; width:32px; height:32px; border-radius:999px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; line-height:1; transition:background .12s}
+.themeBtn:hover{background:rgba(255,255,255,.17)}
 .modeBtn.on .dotw{background:#fff}
 
 /* ---------- HERO ---------- */
@@ -57,9 +75,9 @@ h1 .yr{display:block; color:var(--flame); font-size:.6em; letter-spacing:.01em; 
 .lede.editable:focus{outline:none; border-style:solid; background:#fff; box-shadow:0 0 0 3px var(--sea-soft)}
 
 .ticket{position:relative; background:var(--card); border:1px solid var(--line-strong); border-radius:16px; padding:20px 22px; box-shadow:var(--shadow); overflow:hidden}
-.ticket::before{content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--flame)}
-.ticket .k{font-size:13px; color:var(--flame); font-weight:600; margin-bottom:8px; display:flex; align-items:center; gap:7px}
-.ticket .k .dot{width:8px;height:8px;border-radius:50%;background:var(--flame);box-shadow:0 0 0 4px var(--flame-soft)}
+.ticket::before{content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--highlight)}
+.ticket .k{font-size:13px; color:var(--highlight); font-weight:600; margin-bottom:8px; display:flex; align-items:center; gap:7px}
+.ticket .k .dot{width:8px;height:8px;border-radius:50%;background:var(--highlight);box-shadow:0 0 0 4px var(--highlight-soft)}
 .ticket .day{font-family:"Archivo"; font-weight:800; font-size:26px; letter-spacing:-.01em; line-height:1.05}
 .ticket .act{margin-top:8px; font-size:16px}
 .ticket .act .p{font-weight:600}
@@ -98,12 +116,12 @@ tr.mrow:first-child td{border-top:0}
 .free{color:var(--ink-faint); font-style:italic; font-weight:500}
 .note{color:var(--ink-soft); font-size:14px}
 .aperoBadge{display:inline-block; font-size:11px; font-weight:700; color:#fff; background:var(--flame); border-radius:6px; padding:2px 7px; margin-right:7px; letter-spacing:.02em}
-.todayTag{display:inline-block; font-size:10.5px; font-weight:700; color:#fff; background:var(--flame); padding:2px 7px; border-radius:6px; margin-left:8px; vertical-align:middle}
+.todayTag{display:inline-block; font-size:10.5px; font-weight:700; color:#fff; background:var(--highlight); padding:2px 7px; border-radius:6px; margin-left:8px; vertical-align:middle}
 tr.s-ok{box-shadow:inset 3px 0 0 var(--sea)}
 tr.s-tournoi{box-shadow:inset 3px 0 0 var(--gold); background:var(--gold-soft)}
 tr.s-vacances{background:var(--vac); color:var(--vac-ink); box-shadow:inset 3px 0 0 var(--line-strong)}
 tr.s-vacances .dcell .dnum{color:var(--vac-ink)}
-tr.today{background:var(--flame-soft) !important; box-shadow:inset 3px 0 0 var(--flame)}
+tr.today{background:var(--highlight-soft) !important; box-shadow:inset 3px 0 0 var(--highlight)}
 .vacLabel{font-weight:600}
 
 .editWrap{position:relative; display:block; width:100%}
@@ -118,6 +136,34 @@ tr.today{background:var(--flame-soft) !important; box-shadow:inset 3px 0 0 var(-
 
 /* ---------- RÉPERTOIRE ---------- */
 .repertoire{margin:48px 0 10px; padding-top:30px; border-top:1px solid var(--line)}
+
+/* ---------- SONDAGE ---------- */
+.poll{margin:48px 0 10px; padding-top:30px; border-top:1px solid var(--line)}
+.poll h2{font-family:"Archivo"; font-weight:700; font-size:20px; margin:0}
+.poll .sub{color:var(--ink-soft); font-size:14.5px; margin:8px 0 18px}
+.vote-chips{display:flex; flex-wrap:wrap; gap:9px}
+.vchip{font:inherit; font-size:14px; font-weight:600; padding:9px 14px; border-radius:10px; cursor:pointer; border:1.5px solid var(--line); background:var(--card); color:var(--ink); display:inline-flex; align-items:center; gap:8px; transition:transform .08s, box-shadow .12s, background .12s, border-color .12s}
+.vchip:hover{box-shadow:var(--shadow); transform:translateY(-1px)}
+.vchip .ck{width:16px; height:16px; border-radius:5px; border:1.5px solid var(--line-strong); flex:none; display:inline-flex; align-items:center; justify-content:center; font-size:11px; color:#fff}
+.vchip.on{background:var(--sea-soft); border-color:var(--sea)}
+.vchip.on .ck{background:var(--sea); border-color:var(--sea)}
+.poll-note{margin-top:14px; font-size:12.5px; color:var(--ink-faint)}
+
+.results{margin-top:26px; padding-top:22px; border-top:1px dashed var(--line-strong)}
+.results h3{font-family:"Archivo"; font-weight:700; font-size:15px; margin:0 0 4px}
+.results .total{font-size:12.5px; color:var(--ink-soft); margin-bottom:14px}
+.bar-row{display:flex; align-items:center; gap:10px; margin-bottom:8px}
+.bar-row .bl{width:120px; flex:none; font-size:13px; font-weight:600; color:var(--ink); text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.bar-track{flex:1; height:16px; background:var(--line); border-radius:999px; overflow:hidden; border:1px solid var(--line-strong)}
+.bar-fill{height:100%; background:var(--sea); border-radius:999px; min-width:3px; transition:width .3s}
+.bar-row .bn{width:26px; flex:none; font-size:12.5px; font-weight:700; color:var(--ink-soft)}
+.poll-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:18px}
+.poll-actions .btn{font-size:13.5px; padding:9px 14px}
+.archives{margin-top:18px}
+.archives summary{cursor:pointer; font-size:13px; font-weight:600; color:var(--ink-soft)}
+.arch-item{font-size:12.5px; color:var(--ink-soft); padding:8px 0; border-top:1px solid var(--line)}
+.arch-item b{color:var(--ink)}
+
 .rep-head h2{font-family:"Archivo"; font-weight:700; font-size:20px; margin:0}
 .rep-legend{display:flex; flex-wrap:wrap; gap:13px; font-size:12.5px; color:var(--ink-soft); margin:12px 0 18px}
 .rep-legend span{display:inline-flex; align-items:center; gap:6px}
@@ -161,6 +207,7 @@ tr.today{background:var(--flame-soft) !important; box-shadow:inset 3px 0 0 var(-
 .err{color:#C0341A; font-size:13.5px; margin-top:10px; min-height:18px}
 .editBtn{margin-top:16px}
 .only-admin{display:none} body.admin .only-admin{display:inline-flex}
+.admin-block{display:none} body.admin .admin-block{display:block}
 
 /* ---------- TOAST ---------- */
 .toast{position:fixed; left:16px; bottom:16px; background:var(--ink); color:#fff; font-size:13px; font-weight:600; padding:10px 15px; border-radius:10px; box-shadow:var(--shadow); opacity:0; transform:translateY(8px); transition:opacity .18s, transform .18s; pointer-events:none; z-index:90; max-width:80vw}
@@ -186,13 +233,21 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
 </style>
 </head>
 <body>
+<script>(function(){
+  try{
+    const saved = localStorage.getItem("srg_theme");
+    const dark = saved ? saved==="dark" : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    if(dark) document.documentElement.setAttribute("data-theme","dark");
+  }catch(e){}
+})();</script>
 <div class="topbar">
   <div class="topbar-wrap">
-    <div class="tb-left">
-      <span class="tb-brand"><span class="b">SRG</span><span>Multisports · Saint-Renan Guilers</span></span>
-      <span class="tb-links" id="tbLinks"></span>
+    <span class="tb-brand"><span class="b">SRG</span><span>Multisports · Saint-Renan Guilers</span></span>
+    <span class="tb-links" id="tbLinks"></span>
+    <div class="tb-right" style="display:flex;align-items:center;gap:8px;flex:0 0 auto">
+      <button class="themeBtn" id="themeBtn" aria-label="Changer de thème" title="Changer de thème">🌙</button>
+      <button class="modeBtn" id="modeBtn"><span class="dotw"></span>Mode lecture</button>
     </div>
-    <button class="modeBtn" id="modeBtn"><span class="dotw"></span>Mode lecture</button>
   </div>
 </div>
 <datalist id="sportsList"></datalist>
@@ -238,6 +293,14 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
       <span style="color:var(--ink-faint)">— cliquez une activité pour sa fiche</span>
     </div>
     <div class="chips" id="chips"></div>
+  </section>
+
+  <section class="poll">
+    <h2>Vos envies pour la suite</h2>
+    <p class="sub">Cochez les activités qui vous feraient plaisir — vous pouvez changer d'avis à tout moment.</p>
+    <div class="vote-chips" id="voteChips"></div>
+    <p class="poll-note">Votre choix est mémorisé sur cet appareil, sans compte ni nom associé.</p>
+    <div class="results admin-block" id="resultsBox"></div>
   </section>
 
   <footer>
@@ -394,7 +457,10 @@ function renderChips(){
   box.querySelectorAll(".chip[data-i]").forEach(b=>b.onclick=()=>openSport(DATA.sports[+b.dataset.i]));
   const ab=document.getElementById("addBtn"); if(ab)ab.onclick=()=>openAdd();
   const dl=document.getElementById("sportsList");
-  if(dl) dl.innerHTML=DATA.sports.map(s=>`<option value="${esc(s.nom)}">`).join("");
+  if(dl){
+    const namesAZ = DATA.sports.map(s=>s.nom).slice().sort((a,b)=>a.localeCompare(b,"fr"));
+    dl.innerHTML = namesAZ.map(n=>`<option value="${esc(n)}">`).join("");
+  }
   renderLinks();
 }
 
@@ -500,6 +566,7 @@ function updateModeBtn(){
   b.innerHTML = ADMIN ? `<span class="dotw"></span>Mode admin — quitter` : `<span class="dotw"></span>Mode lecture`;
   b.classList.toggle("on",ADMIN);
   renderLinks();
+  if(DATA.poll) renderResults();
 }
 function setLedeEditable(on){ const l=document.getElementById("lede"); l.classList.toggle("editable",on); l.contentEditable=on?"true":"false"; }
 function openLogin(){
@@ -532,6 +599,95 @@ const bAll=document.getElementById("v-all"), bNext=document.getElementById("v-ne
 function setView(showPast){SHOW_PAST=showPast; bAll.setAttribute("aria-pressed",showPast); bNext.setAttribute("aria-pressed",!showPast); renderCal();}
 bAll.onclick=()=>setView(true); bNext.onclick=()=>setView(false);
 
+
+/* ---------- Sondage d'activités ---------- */
+function voterId(){
+  try{
+    let id=localStorage.getItem("srg_voter_id");
+    if(!id){ id = (crypto.randomUUID ? crypto.randomUUID() : ("v"+Date.now()+Math.random().toString(36).slice(2))); localStorage.setItem("srg_voter_id",id); }
+    return id;
+  }catch(e){ return "anon"; }
+}
+const VOTER = voterId();
+DATA.poll = DATA.poll || {votes:{}, archives:[]};
+
+function myVotes(){ return DATA.poll.votes[VOTER] || {}; }
+function renderVoteChips(){
+  const mine = myVotes();
+  const names = DATA.sports.map(s=>s.nom).slice().sort((a,b)=>a.localeCompare(b,"fr"));
+  document.getElementById("voteChips").innerHTML = names.map(n=>{
+    const on = !!mine[n];
+    return `<button type="button" class="vchip${on?" on":""}" data-nom="${esc(n)}"><span class="ck">${on?"✓":""}</span>${esc(n)}</button>`;
+  }).join("");
+  document.querySelectorAll(".vchip").forEach(b=>b.onclick=()=>toggleVote(b.dataset.nom));
+}
+async function toggleVote(nom){
+  const mine = Object.assign({}, myVotes());
+  if(mine[nom]) delete mine[nom]; else mine[nom]=true;
+  DATA.poll.votes[VOTER]=mine;
+  renderVoteChips(); renderResults();
+  try{ await docRef.update({ [`poll.votes.${VOTER}`]: mine }); }
+  catch(e){ console.error(e); toast("Échec de l'enregistrement du vote.",true); }
+}
+function aggregateVotes(){
+  const counts={};
+  Object.values(DATA.poll.votes||{}).forEach(sel=>{
+    Object.keys(sel||{}).forEach(n=>{ if(sel[n]) counts[n]=(counts[n]||0)+1; });
+  });
+  return counts;
+}
+function renderResults(){
+  const box=document.getElementById("resultsBox"); if(!box) return;
+  const counts=aggregateVotes();
+  const voters=Object.keys(DATA.poll.votes||{}).filter(k=>Object.keys(DATA.poll.votes[k]||{}).length>0).length;
+  const rows=Object.entries(counts).sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0],"fr"));
+  const max=rows.length?rows[0][1]:0;
+  const bars = rows.length ? rows.map(([n,c])=>`<div class="bar-row"><span class="bl">${esc(n)}</span><span class="bar-track"><span class="bar-fill" style="width:${max?Math.round(c/max*100):0}%"></span></span><span class="bn">${c}</span></div>`).join("")
+                            : `<p class="poll-note">Aucun vote pour l'instant.</p>`;
+  const arch = (DATA.poll.archives||[]);
+  const archHtml = arch.length ? `<details class="archives"><summary>Historique (${arch.length})</summary>${
+      arch.slice().reverse().map(a=>{
+        const top=(a.counts?Object.entries(a.counts).sort((x,y)=>y[1]-x[1]):[]).slice(0,3).map(([n,c])=>`${esc(n)} (${c})`).join(", ");
+        return `<div class="arch-item"><b>${esc(a.date||"")}</b> — ${a.total||0} vote(s)${top?" · "+top:""}</div>`;
+      }).join("")
+    }</details>` : "";
+  box.innerHTML = `<h3>Résultats</h3><p class="total">${voters} participant${voters>1?"s":""} au total</p>${bars}
+    <div class="poll-actions">
+      <button class="btn" onclick="__archivePoll()">Archiver ce sondage</button>
+      <button class="btn" onclick="__resetPoll()">Réinitialiser sans archiver</button>
+    </div>${archHtml}`;
+}
+window.__archivePoll=async function(){
+  const counts=aggregateVotes();
+  const total=Object.keys(DATA.poll.votes||{}).filter(k=>Object.keys(DATA.poll.votes[k]||{}).length>0).length;
+  if(!Object.keys(counts).length){ toast("Rien à archiver pour l'instant.",true); return; }
+  const entry={date:new Date().toLocaleDateString("fr-FR"), counts, total};
+  DATA.poll.archives=(DATA.poll.archives||[]).concat([entry]).slice(-15);
+  DATA.poll.votes={};
+  renderResults(); renderVoteChips();
+  try{ await docRef.update({"poll.archives":DATA.poll.archives, "poll.votes":{}}); toast("Sondage archivé et réinitialisé."); }
+  catch(e){ console.error(e); toast("Échec de l'archivage.",true); }
+};
+window.__resetPoll=async function(){
+  DATA.poll.votes={};
+  renderResults(); renderVoteChips();
+  try{ await docRef.update({"poll.votes":{}}); toast("Choix des utilisateurs réinitialisés."); }
+  catch(e){ console.error(e); toast("Échec de la réinitialisation.",true); }
+};
+
+/* ---------- Thème clair / sombre ---------- */
+function updateThemeBtn(){
+  const on = document.documentElement.getAttribute("data-theme")==="dark";
+  document.getElementById("themeBtn").textContent = on ? "☀️" : "🌙";
+}
+document.getElementById("themeBtn").onclick=function(){
+  const isDark = document.documentElement.getAttribute("data-theme")==="dark";
+  if(isDark){ document.documentElement.removeAttribute("data-theme"); try{localStorage.setItem("srg_theme","light");}catch(e){} }
+  else{ document.documentElement.setAttribute("data-theme","dark"); try{localStorage.setItem("srg_theme","dark");}catch(e){} }
+  updateThemeBtn();
+};
+updateThemeBtn();
+
 /* ---------- Démarrage : chargement Firestore ---------- */
 async function boot(){
   try{
@@ -543,16 +699,20 @@ async function boot(){
       if(d.info) DATA.info=d.info;
       if(typeof d.lede==="string") lede.textContent=d.lede;
       if(d.links) DATA.links=d.links;
+      if(d.poll) DATA.poll=d.poll;
     } else {
       DATA.links = DATA.links || {whatsapp:"",spotify:""};
-      await docRef.set({calendrier:stripCal(), sports:DATA.sports, info:DATA.info, lede:lede.textContent.trim(), links:DATA.links});
+      DATA.poll = DATA.poll || {votes:{}, archives:[]};
+      await docRef.set({calendrier:stripCal(), sports:DATA.sports, info:DATA.info, lede:lede.textContent.trim(), links:DATA.links, poll:DATA.poll});
     }
   }catch(e){ console.error(e); toast("Connexion à la base impossible — affichage hors-ligne.",true); }
   DATA.links = DATA.links || {whatsapp:"",spotify:""};
   lede.dataset.prev = lede.textContent.trim();
   DATA.calendrier.forEach(c=>recompute(c));
   rebuildLieu();
+  DATA.poll = DATA.poll || {votes:{}, archives:[]};
   renderTicket(); renderCal(); renderChips(); renderLinks();
+  renderVoteChips(); renderResults();
 }
 updateModeBtn();
 boot();
