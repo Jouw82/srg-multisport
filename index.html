@@ -180,6 +180,10 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 .vchip.on{background:var(--sea-soft); border-color:var(--sea)}
 .vchip.on .ck{background:var(--sea); border-color:var(--sea)}
 .poll-note{margin-top:14px; font-size:12.5px; color:var(--ink-faint)}
+.custom-tags{display:flex; flex-wrap:wrap; gap:7px; margin-top:10px}
+.ctag{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; padding:5px 6px 5px 11px; border-radius:999px; background:var(--gold-soft); border:1px solid var(--gold); color:var(--ink)}
+.ctag button{font:inherit; font-size:13px; line-height:1; border:0; background:rgba(0,0,0,.08); color:var(--ink-soft); width:18px; height:18px; border-radius:50%; cursor:pointer; display:inline-flex; align-items:center; justify-content:center}
+.ctag button:hover{background:rgba(0,0,0,.16)}
 
 .results{margin-top:26px; padding-top:22px; border-top:1px dashed var(--line-strong)}
 .results h3{font-family:"Archivo"; font-weight:700; font-size:15px; margin:0 0 4px}
@@ -776,9 +780,21 @@ function updateSuggestBadge(){
   if(!b) return;
   if(n>0){ b.textContent=n; b.style.display="inline-flex"; } else { b.style.display="none"; }
 }
+let SG_CUSTOM = [];
+function renderCustomTags(){
+  const box=document.getElementById("sgCustomTags"); if(!box) return;
+  if(!SG_CUSTOM.length){ box.innerHTML=""; box.style.display="none"; return; }
+  box.style.display="flex";
+  box.innerHTML = SG_CUSTOM.map(k=>`<span class="ctag">${esc(k)}<button type="button" data-rm="${esc(k)}" aria-label="Retirer">×</button></span>`).join("");
+  box.querySelectorAll("[data-rm]").forEach(btn=>btn.onclick=()=>{
+    SG_CUSTOM = SG_CUSTOM.filter(x=>x!==btn.dataset.rm);
+    renderCustomTags();
+  });
+}
 function openSuggestModal(){
   const mine = myVotes();
   const knownNames = new Set(DATA.sports.map(s=>s.nom));
+  SG_CUSTOM = Object.keys(mine).filter(k=>!knownNames.has(k));
   const names = DATA.sports.map(s=>s.nom).slice().sort((a,b)=>a.localeCompare(b,"fr"));
   const chipsHtml = names.map(n=>{
     const on=!!mine[n];
@@ -787,6 +803,7 @@ function openSuggestModal(){
   openModal(`<div class="mhead"><h3>Suggérer une activité</h3><button class="x" onclick="__close()" aria-label="Fermer">✕</button></div>
     <p class="resume" style="font-size:14px;color:var(--ink-soft)">Cochez ce qui vous ferait plaisir — vous pouvez changer d'avis à tout moment.</p>
     <div class="vote-chips" id="voteChips">${chipsHtml}</div>
+    <div class="custom-tags" id="sgCustomTags" style="display:none"></div>
     <div class="field"><label>Autre (facultatif)</label><input id="sg-autre" placeholder="Une activité qui n'est pas dans la liste…"></div>
     <div class="mactions"><button class="btn primary" onclick="__saveSuggest()">Enregistrer mes choix</button><button class="btn" onclick="__close()">Fermer</button></div>
     <p class="poll-note">Votre choix est mémorisé sur cet appareil, sans compte ni nom associé.</p>`);
@@ -794,14 +811,12 @@ function openSuggestModal(){
     b.classList.toggle("on");
     b.querySelector(".ck").textContent = b.classList.contains("on") ? "✓" : "";
   });
+  renderCustomTags();
 }
 window.__saveSuggest=async function(){
-  const mine = Object.assign({}, myVotes());
-  const known = new Set(DATA.sports.map(s=>s.nom));
-  document.querySelectorAll("#voteChips .vchip").forEach(b=>{
-    const nom=b.dataset.nom, on=b.classList.contains("on");
-    if(on) mine[nom]=true; else if(known.has(nom)) delete mine[nom];
-  });
+  const mine = {};
+  document.querySelectorAll("#voteChips .vchip.on").forEach(b=>{ mine[b.dataset.nom]=true; });
+  SG_CUSTOM.forEach(k=>{ mine[k]=true; });
   const autre=(document.getElementById("sg-autre").value||"").trim();
   if(autre) mine[autre]=true;
   DATA.poll.votes[VOTER]=mine;
@@ -844,13 +859,13 @@ window.__archivePoll=async function(){
   const entry={date:new Date().toLocaleDateString("fr-FR"), counts, total};
   DATA.poll.archives=(DATA.poll.archives||[]).concat([entry]).slice(-15);
   DATA.poll.votes={};
-  renderResults(); renderVoteChips();
+  renderResults(); updateSuggestBadge();
   try{ await docRef.update({"poll.archives":DATA.poll.archives, "poll.votes":{}}); toast("Sondage archivé et réinitialisé."); }
   catch(e){ console.error(e); toast("Échec de l'archivage.",true); }
 };
 window.__resetPoll=async function(){
   DATA.poll.votes={};
-  renderResults(); renderVoteChips();
+  renderResults(); updateSuggestBadge();
   try{ await docRef.update({"poll.votes":{}}); toast("Choix des utilisateurs réinitialisés."); }
   catch(e){ console.error(e); toast("Échec de la réinitialisation.",true); }
 };
