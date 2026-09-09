@@ -14,6 +14,7 @@
   --line:#D6D6D6; --line-strong:#C2C2C2;
   --flame:#153AA3; --flame-soft:#E4EAF9;
   --highlight:#E9531F; --highlight-soft:#FCEAE0;
+  --solid:#16232E;
   --sea:#0E7C86; --sea-soft:#E3F1F0;
   --gold:#F0A94E; --gold-soft:#FDF0DE;
   --green:#1E9E52; --green-soft:#E4F4E7; --green-line:#B7E0C0; --green-ink:#1C7A40;
@@ -71,8 +72,8 @@ h1 .yr{display:block; color:var(--flame); font-size:.6em; letter-spacing:.01em; 
 .lede{margin:16px 0 0; color:var(--ink-soft); max-width:42ch; font-size:17px}
 .lede.editable{cursor:text; border:1.5px dashed var(--sea); border-radius:8px; padding:7px 32px 7px 10px; margin-left:-10px; position:relative; background:var(--sea-soft); transition:background .12s, border-color .12s}
 .lede.editable::after{content:"✎"; position:absolute; right:11px; top:11px; font-size:12px; color:var(--sea); opacity:.65}
-.lede.editable:hover{background:#fff}
-.lede.editable:focus{outline:none; border-style:solid; background:#fff; box-shadow:0 0 0 3px var(--sea-soft)}
+.lede.editable:hover{background:var(--card)}
+.lede.editable:focus{outline:none; border-style:solid; background:var(--card); box-shadow:0 0 0 3px var(--sea-soft)}
 
 .ticket{position:relative; background:var(--card); border:1px solid var(--line-strong); border-radius:16px; padding:20px 22px; box-shadow:var(--shadow); overflow:hidden}
 .ticket::before{content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--highlight)}
@@ -90,11 +91,11 @@ h1 .yr{display:block; color:var(--flame); font-size:.6em; letter-spacing:.01em; 
 .cal-head h2{font-family:"Archivo"; font-weight:700; font-size:20px; margin:0}
 .seg{display:inline-flex; background:var(--card); border:1px solid var(--line); border-radius:11px; padding:3px}
 .seg button{font:inherit; font-size:13.5px; font-weight:600; color:var(--ink-soft); cursor:pointer; background:none; border:0; padding:7px 14px; border-radius:8px}
-.seg button[aria-pressed="true"]{background:var(--ink); color:#fff}
+.seg button[aria-pressed="true"]{background:var(--solid); color:#fff}
 .legend{display:flex; flex-wrap:wrap; gap:13px; font-size:12.5px; color:var(--ink-soft)}
 .legend span{display:inline-flex; align-items:center; gap:6px}
 .legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
-.lg-ok{background:var(--sea)} .lg-tbd{background:#fff;border:1.5px dashed var(--line-strong)}
+.lg-ok{background:var(--sea)} .lg-tbd{background:var(--card);border:1.5px dashed var(--line-strong)}
 .lg-vac{background:var(--vac);border:1px solid var(--line-strong)} .lg-tour{background:var(--gold)}
 
 table{width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden}
@@ -127,8 +128,8 @@ tr.today{background:var(--highlight-soft) !important; box-shadow:inset 3px 0 0 v
 .editWrap{position:relative; display:block; width:100%}
 .edit{width:100%; font:inherit; font-size:15px; padding:6px 26px 6px 9px; border:1.5px dashed var(--sea); border-radius:8px; background:var(--sea-soft); color:var(--ink); transition:background .12s, border-color .12s}
 .edit::placeholder{color:var(--ink-faint); font-style:italic}
-.edit:hover{background:#fff}
-.edit:focus{outline:none; border-style:solid; background:#fff; box-shadow:0 0 0 3px var(--sea-soft)}
+.edit:hover{background:var(--card)}
+.edit:focus{outline:none; border-style:solid; background:var(--card); box-shadow:0 0 0 3px var(--sea-soft)}
 .editWrap .pencil{position:absolute; right:8px; top:50%; transform:translateY(-50%); font-size:11px; color:var(--sea); opacity:.6; pointer-events:none}
 .sugg{margin-top:6px; font-size:12px; color:var(--ink-soft); display:flex; align-items:center; gap:8px; flex-wrap:wrap}
 .sugg button{font:inherit; font-size:11.5px; font-weight:700; color:var(--green-ink); background:var(--green-soft); border:1px solid var(--green-line); border-radius:999px; padding:3px 10px; cursor:pointer}
@@ -141,10 +142,12 @@ tr.today{background:var(--highlight-soft) !important; box-shadow:inset 3px 0 0 v
 .poll{margin:48px 0 10px; padding-top:30px; border-top:1px solid var(--line)}
 .poll h2{font-family:"Archivo"; font-weight:700; font-size:20px; margin:0}
 .poll .sub{color:var(--ink-soft); font-size:14.5px; margin:8px 0 18px}
-.vote-chips{display:flex; flex-wrap:wrap; gap:9px}
-.vchip{font:inherit; font-size:14px; font-weight:600; padding:9px 14px; border-radius:10px; cursor:pointer; border:1.5px solid var(--line); background:var(--card); color:var(--ink); display:inline-flex; align-items:center; gap:8px; transition:transform .08s, box-shadow .12s, background .12s, border-color .12s}
+.suggestBtn{font-size:13px; padding:8px 14px; display:inline-flex; align-items:center; gap:8px}
+.suggestBtn .cnt{font-size:10px; font-weight:700; border-radius:999px; min-width:16px; height:16px; padding:0 4px; display:inline-flex; align-items:center; justify-content:center; background:var(--sea); color:#fff}
+.vote-chips{display:flex; flex-wrap:wrap; gap:7px; max-height:260px; overflow:auto; padding:2px}
+.vchip{font:inherit; font-size:12.5px; font-weight:600; padding:6px 11px; border-radius:8px; cursor:pointer; border:1.5px solid var(--line); background:var(--card); color:var(--ink); display:inline-flex; align-items:center; gap:6px; transition:transform .08s, box-shadow .12s, background .12s, border-color .12s}
 .vchip:hover{box-shadow:var(--shadow); transform:translateY(-1px)}
-.vchip .ck{width:16px; height:16px; border-radius:5px; border:1.5px solid var(--line-strong); flex:none; display:inline-flex; align-items:center; justify-content:center; font-size:11px; color:#fff}
+.vchip .ck{width:14px; height:14px; border-radius:4px; border:1.5px solid var(--line-strong); flex:none; display:inline-flex; align-items:center; justify-content:center; font-size:10px; color:#fff}
 .vchip.on{background:var(--sea-soft); border-color:var(--sea)}
 .vchip.on .ck{background:var(--sea); border-color:var(--sea)}
 .poll-note{margin-top:14px; font-size:12.5px; color:var(--ink-faint)}
@@ -168,11 +171,11 @@ tr.today{background:var(--highlight-soft) !important; box-shadow:inset 3px 0 0 v
 .rep-legend{display:flex; flex-wrap:wrap; gap:13px; font-size:12.5px; color:var(--ink-soft); margin:12px 0 18px}
 .rep-legend span{display:inline-flex; align-items:center; gap:6px}
 .rep-legend i{width:12px;height:12px;border-radius:4px;display:inline-block;border:1px solid var(--line-strong)}
-.i0{background:#fff} .i1{background:var(--green-soft);border-color:var(--green-line)} .i2{background:var(--green);border-color:var(--green)}
+.i0{background:var(--card)} .i1{background:var(--green-soft);border-color:var(--green-line)} .i2{background:var(--green);border-color:var(--green)}
 .chips{display:flex; flex-wrap:wrap; gap:9px}
-.chip{font:inherit; font-size:14px; font-weight:600; padding:9px 14px; border-radius:10px; cursor:pointer; border:1px solid var(--line); background:#fff; color:var(--ink); display:inline-flex; align-items:center; gap:9px; transition:transform .08s, box-shadow .12s}
+.chip{font:inherit; font-size:12.5px; font-weight:600; padding:6px 11px; border-radius:8px; cursor:pointer; border:1px solid var(--line); background:var(--card); color:var(--ink); display:inline-flex; align-items:center; gap:7px; transition:transform .08s, box-shadow .12s}
 .chip:hover{box-shadow:var(--shadow); transform:translateY(-1px)}
-.chip .cnt{font-size:11px; font-weight:700; border-radius:999px; min-width:18px; height:18px; padding:0 5px; display:inline-flex; align-items:center; justify-content:center; background:rgba(0,0,0,.06); color:var(--ink-soft)}
+.chip .cnt{font-size:10px; font-weight:700; border-radius:999px; min-width:16px; height:16px; padding:0 4px; display:inline-flex; align-items:center; justify-content:center; background:rgba(0,0,0,.06); color:var(--ink-soft)}
 .chip.f1{background:var(--green-soft); border-color:var(--green-line); color:var(--green-ink)}
 .chip.f1 .cnt{background:var(--green-line); color:var(--green-ink)}
 .chip.f2{background:var(--green); border-color:var(--green); color:#fff}
@@ -200,8 +203,8 @@ tr.today{background:var(--highlight-soft) !important; box-shadow:inset 3px 0 0 v
 .field input,.field textarea{width:100%; font:inherit; font-size:15px; padding:10px 12px; border:1px solid var(--line-strong); border-radius:10px; background:var(--paper); color:var(--ink); resize:vertical}
 .field input:focus,.field textarea:focus{outline:2px solid var(--sea); outline-offset:1px; border-color:var(--sea)}
 .mactions{display:flex; gap:10px; margin-top:20px; flex-wrap:wrap}
-.btn{font:inherit; font-weight:600; font-size:15px; padding:11px 18px; border-radius:11px; cursor:pointer; border:1px solid var(--line-strong); background:#fff; color:var(--ink)}
-.btn.primary{background:var(--ink); color:#fff; border-color:var(--ink)}
+.btn{font:inherit; font-weight:600; font-size:15px; padding:11px 18px; border-radius:11px; cursor:pointer; border:1px solid var(--line-strong); background:var(--card); color:var(--ink)}
+.btn.primary{background:var(--solid); color:#fff; border-color:var(--solid)}
 .btn.ghost{border-color:var(--sea); color:var(--sea)}
 .hint{font-size:12.5px; color:var(--ink-faint); margin-top:12px}
 .err{color:#C0341A; font-size:13.5px; margin-top:10px; min-height:18px}
@@ -210,7 +213,7 @@ tr.today{background:var(--highlight-soft) !important; box-shadow:inset 3px 0 0 v
 .admin-block{display:none} body.admin .admin-block{display:block}
 
 /* ---------- TOAST ---------- */
-.toast{position:fixed; left:16px; bottom:16px; background:var(--ink); color:#fff; font-size:13px; font-weight:600; padding:10px 15px; border-radius:10px; box-shadow:var(--shadow); opacity:0; transform:translateY(8px); transition:opacity .18s, transform .18s; pointer-events:none; z-index:90; max-width:80vw}
+.toast{position:fixed; left:16px; bottom:16px; background:var(--solid); color:#fff; font-size:13px; font-weight:600; padding:10px 15px; border-radius:10px; box-shadow:var(--shadow); opacity:0; transform:translateY(8px); transition:opacity .18s, transform .18s; pointer-events:none; z-index:90; max-width:80vw}
 .toast.show{opacity:1; transform:translateY(0)}
 .toast.err{background:#C0341A}
 
@@ -271,6 +274,7 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
         <button id="v-all" aria-pressed="true">Saison complète</button>
         <button id="v-next" aria-pressed="false">À venir</button>
       </div>
+      <button type="button" class="btn suggestBtn" id="suggestBtn">Suggérer une activité<span class="cnt" id="suggestCnt" style="display:none"></span></button>
     </div>
     <div class="legend">
       <span><i class="lg-ok"></i>Programmée</span>
@@ -295,12 +299,9 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
     <div class="chips" id="chips"></div>
   </section>
 
-  <section class="poll">
-    <h2>Vos envies pour la suite</h2>
-    <p class="sub">Cochez les activités qui vous feraient plaisir — vous pouvez changer d'avis à tout moment.</p>
-    <div class="vote-chips" id="voteChips"></div>
-    <p class="poll-note">Votre choix est mémorisé sur cet appareil, sans compte ni nom associé.</p>
-    <div class="results admin-block" id="resultsBox"></div>
+  <section class="poll admin-block">
+    <h2>Sondage — envies d'activités</h2>
+    <div class="results" id="resultsBox"></div>
   </section>
 
   <footer>
@@ -598,6 +599,7 @@ lede.addEventListener("blur",()=>{
 const bAll=document.getElementById("v-all"), bNext=document.getElementById("v-next");
 function setView(showPast){SHOW_PAST=showPast; bAll.setAttribute("aria-pressed",showPast); bNext.setAttribute("aria-pressed",!showPast); renderCal();}
 bAll.onclick=()=>setView(true); bNext.onclick=()=>setView(false);
+document.getElementById("suggestBtn").onclick=openSuggestModal;
 
 
 /* ---------- Sondage d'activités ---------- */
@@ -612,23 +614,45 @@ const VOTER = voterId();
 DATA.poll = DATA.poll || {votes:{}, archives:[]};
 
 function myVotes(){ return DATA.poll.votes[VOTER] || {}; }
-function renderVoteChips(){
+function updateSuggestBadge(){
+  const n = Object.keys(myVotes()).length;
+  const b = document.getElementById("suggestCnt");
+  if(!b) return;
+  if(n>0){ b.textContent=n; b.style.display="inline-flex"; } else { b.style.display="none"; }
+}
+function openSuggestModal(){
   const mine = myVotes();
+  const knownNames = new Set(DATA.sports.map(s=>s.nom));
   const names = DATA.sports.map(s=>s.nom).slice().sort((a,b)=>a.localeCompare(b,"fr"));
-  document.getElementById("voteChips").innerHTML = names.map(n=>{
-    const on = !!mine[n];
+  const chipsHtml = names.map(n=>{
+    const on=!!mine[n];
     return `<button type="button" class="vchip${on?" on":""}" data-nom="${esc(n)}"><span class="ck">${on?"✓":""}</span>${esc(n)}</button>`;
   }).join("");
-  document.querySelectorAll(".vchip").forEach(b=>b.onclick=()=>toggleVote(b.dataset.nom));
+  openModal(`<div class="mhead"><h3>Suggérer une activité</h3><button class="x" onclick="__close()" aria-label="Fermer">✕</button></div>
+    <p class="resume" style="font-size:14px;color:var(--ink-soft)">Cochez ce qui vous ferait plaisir — vous pouvez changer d'avis à tout moment.</p>
+    <div class="vote-chips" id="voteChips">${chipsHtml}</div>
+    <div class="field"><label>Autre (facultatif)</label><input id="sg-autre" placeholder="Une activité qui n'est pas dans la liste…"></div>
+    <div class="mactions"><button class="btn primary" onclick="__saveSuggest()">Enregistrer mes choix</button><button class="btn" onclick="__close()">Fermer</button></div>
+    <p class="poll-note">Votre choix est mémorisé sur cet appareil, sans compte ni nom associé.</p>`);
+  document.querySelectorAll("#voteChips .vchip").forEach(b=>b.onclick=()=>{
+    b.classList.toggle("on");
+    b.querySelector(".ck").textContent = b.classList.contains("on") ? "✓" : "";
+  });
 }
-async function toggleVote(nom){
+window.__saveSuggest=async function(){
   const mine = Object.assign({}, myVotes());
-  if(mine[nom]) delete mine[nom]; else mine[nom]=true;
+  const known = new Set(DATA.sports.map(s=>s.nom));
+  document.querySelectorAll("#voteChips .vchip").forEach(b=>{
+    const nom=b.dataset.nom, on=b.classList.contains("on");
+    if(on) mine[nom]=true; else if(known.has(nom)) delete mine[nom];
+  });
+  const autre=(document.getElementById("sg-autre").value||"").trim();
+  if(autre) mine[autre]=true;
   DATA.poll.votes[VOTER]=mine;
-  renderVoteChips(); renderResults();
-  try{ await docRef.update({ [`poll.votes.${VOTER}`]: mine }); }
-  catch(e){ console.error(e); toast("Échec de l'enregistrement du vote.",true); }
-}
+  updateSuggestBadge(); renderResults(); closeModal();
+  try{ await docRef.update({ [`poll.votes.${VOTER}`]: mine }); toast("Vos choix ont été enregistrés."); }
+  catch(e){ console.error(e); toast("Échec de l'enregistrement.",true); }
+};
 function aggregateVotes(){
   const counts={};
   Object.values(DATA.poll.votes||{}).forEach(sel=>{
@@ -712,7 +736,7 @@ async function boot(){
   rebuildLieu();
   DATA.poll = DATA.poll || {votes:{}, archives:[]};
   renderTicket(); renderCal(); renderChips(); renderLinks();
-  renderVoteChips(); renderResults();
+  updateSuggestBadge(); renderResults();
 }
 updateModeBtn();
 boot();
