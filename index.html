@@ -39,7 +39,7 @@
 [data-theme="dark"] .lede.editable{background:var(--sea-soft)}
 [data-theme="dark"] .eyebrow{color:var(--highlight)}
 [data-theme="dark"] h1{color:var(--highlight)}
-[data-theme="dark"] .suggestBtn{border-color:var(--highlight); color:var(--highlight)}
+[data-theme="dark"] .btn.suggestBtn{border-color:var(--highlight); color:var(--highlight)}
 [data-theme="dark"] .ticket{background:rgba(255,122,71,.10)}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -93,8 +93,12 @@ h1 .yr{display:block; color:var(--flame); font-size:.6em; letter-spacing:.01em; 
 .cal-head{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin:34px 0 12px}
 .ch-left{display:flex; align-items:center; gap:16px; flex-wrap:wrap}
 .cal-head h2{font-family:"Archivo"; font-weight:700; font-size:20px; margin:0}
-.toggleBtn{font-size:13px; padding:8px 14px}
-.toggleBtn[aria-pressed="true"]{background:var(--sea); border-color:var(--sea); color:#fff}
+.toggleSwitch{display:inline-flex; align-items:center; gap:9px; background:none; border:0; cursor:pointer; padding:6px 4px; font:inherit}
+.sw-track{width:34px; height:20px; border-radius:999px; background:var(--line-strong); position:relative; transition:background .15s; flex:none}
+.sw-knob{position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:var(--card); box-shadow:0 1px 3px rgba(0,0,0,.3); transition:left .15s}
+.toggleSwitch[aria-pressed="true"] .sw-track{background:var(--sea)}
+.toggleSwitch[aria-pressed="true"] .sw-knob{left:16px; background:#fff}
+.sw-label{font-size:13.5px; font-weight:600; color:var(--ink)}
 .legend{display:flex; flex-wrap:wrap; gap:13px; font-size:12.5px; color:var(--ink-soft)}
 .legend span{display:inline-flex; align-items:center; gap:6px}
 .legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
@@ -144,11 +148,30 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 /* ---------- RÉPERTOIRE ---------- */
 .repertoire{margin:48px 0 10px; padding-top:30px; border-top:1px solid var(--line)}
 
+.membersRow{margin-bottom:12px}
+.mbr-list{margin-top:18px; max-height:240px; overflow:auto; border-top:1px solid var(--line)}
+.mbr-row{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px}
+.mbr-row .nm{font-weight:700}
+.mbr-row .sub{color:var(--ink-soft); font-size:12px; margin-top:2px}
+.mbr-row .tags{display:flex; gap:5px; margin-top:5px; flex-wrap:wrap}
+.mbr-tag{font-size:10.5px; font-weight:700; padding:2px 7px; border-radius:999px; background:var(--sea-soft); color:var(--sea)}
+.mbr-actions{display:flex; gap:6px; flex:none}
+.mbr-actions button{font:inherit; font-size:12px; font-weight:600; border:1px solid var(--line-strong); background:var(--card); color:var(--ink-soft); border-radius:8px; padding:5px 9px; cursor:pointer}
+.mbr-actions button:hover{background:var(--paper)}
+.mbr-actions button.danger{color:#C0341A; border-color:#C0341A}
+.check-row{display:flex; gap:18px; margin-top:8px; flex-wrap:wrap}
+.check-row label{display:flex; align-items:center; gap:7px; font-size:14px; font-weight:600; cursor:pointer; color:var(--ink)}
+.check-row input[type="checkbox"]{width:16px; height:16px; accent-color:var(--sea)}
+.mbr-empty{color:var(--ink-faint); font-size:13px; padding:14px 0}
+.two-col{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+@media(max-width:480px){.two-col{grid-template-columns:1fr}}
+
+
 /* ---------- SONDAGE ---------- */
 .poll{margin:48px 0 10px; padding-top:30px; border-top:1px solid var(--line)}
 .poll h2{font-family:"Archivo"; font-weight:700; font-size:20px; margin:0}
 .poll .sub{color:var(--ink-soft); font-size:14.5px; margin:8px 0 18px}
-.suggestBtn{font-size:13px; padding:8px 14px; display:inline-flex; align-items:center; gap:8px; border:1.5px solid var(--green); color:var(--ink)}
+.btn.suggestBtn{font-size:13px; padding:8px 14px; display:inline-flex; align-items:center; gap:8px; border:1.5px solid var(--green); color:var(--ink)}
 .suggestBtn .cnt{font-size:10px; font-weight:700; border-radius:999px; min-width:16px; height:16px; padding:0 4px; display:inline-flex; align-items:center; justify-content:center; background:var(--sea); color:#fff}
 .vote-chips{display:flex; flex-wrap:wrap; gap:7px; max-height:260px; overflow:auto; padding:2px}
 .vchip{font:inherit; font-size:12.5px; font-weight:600; padding:6px 11px; border-radius:8px; cursor:pointer; border:1.5px solid var(--line); background:var(--card); color:var(--ink); display:inline-flex; align-items:center; gap:6px; transition:transform .08s, box-shadow .12s, background .12s, border-color .12s}
@@ -273,9 +296,15 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
     </div>
   </header>
 
+  <div class="membersRow">
+    <button type="button" class="btn only-admin" id="membersBtn">Gestion des membres</button>
+  </div>
   <div class="cal-head">
     <div class="ch-left">
-      <button type="button" class="btn toggleBtn" id="toggleUpcoming" aria-pressed="false">À venir</button>
+      <button type="button" class="toggleSwitch" id="toggleUpcoming" aria-pressed="false">
+        <span class="sw-track"><span class="sw-knob"></span></span>
+        <span class="sw-label">À venir</span>
+      </button>
       <button type="button" class="btn suggestBtn" id="suggestBtn">Suggérer une activité<span class="cnt" id="suggestCnt" style="display:none"></span></button>
     </div>
     <div class="legend">
@@ -432,6 +461,124 @@ function renderCal(){
       });
     });
   }
+}
+
+
+/* ---------- Gestion des membres (admin) ---------- */
+DATA.membres = DATA.membres || [];
+let MBR_EDIT_ID = null;
+
+function saveMembres(){
+  return docRef.update({membres:DATA.membres})
+    .then(()=>toast("Membres enregistrés."))
+    .catch(e=>{ console.error(e); toast("Échec de l'enregistrement des membres.",true); });
+}
+function mbrLabel(m){
+  const acts=[]; if(m.multisports)acts.push("Multisports"); if(m.handloisir)acts.push("Hand Loisir");
+  return acts.join(" · ");
+}
+function renderMembersList(){
+  const box=document.getElementById("mbrList"); if(!box) return;
+  if(!DATA.membres.length){ box.innerHTML=`<p class="mbr-empty">Aucun membre enregistré pour l'instant.</p>`; return; }
+  const rows = DATA.membres.slice().sort((a,b)=>(a.nom||"").localeCompare(b.nom||"","fr"));
+  box.innerHTML = rows.map(m=>`
+    <div class="mbr-row">
+      <div>
+        <div class="nm">${esc(m.prenom)} ${esc(m.nom)}</div>
+        <div class="sub">${esc(m.email||"")}${m.email&&m.tel?" · ":""}${esc(m.tel||"")}${m.naissance?" · né(e) le "+esc(m.naissance.split("-").reverse().join("/")):""}</div>
+        <div class="tags">${mbrLabel(m).split(" · ").filter(Boolean).map(t=>`<span class="mbr-tag">${esc(t)}</span>`).join("")}</div>
+      </div>
+      <div class="mbr-actions">
+        <button type="button" data-edit="${m.id}">Éditer</button>
+        <button type="button" class="danger" data-del="${m.id}">Supprimer</button>
+      </div>
+    </div>`).join("");
+  box.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>fillMemberForm(b.dataset.edit));
+  box.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>deleteMember(b.dataset.del));
+}
+function memberFormHtml(){
+  return `
+    <div class="field"><label>Nom *</label><input id="m-nom"></div>
+    <div class="two-col">
+      <div class="field"><label>Prénom *</label><input id="m-prenom"></div>
+      <div class="field"><label>Date de naissance</label><input id="m-naissance" type="date"></div>
+    </div>
+    <div class="two-col">
+      <div class="field"><label>Email</label><input id="m-email" type="email"></div>
+      <div class="field"><label>Téléphone</label><input id="m-tel" type="tel"></div>
+    </div>
+    <div class="check-row">
+      <label><input type="checkbox" id="m-multi"> Multisports</label>
+      <label><input type="checkbox" id="m-hand"> Hand Loisir</label>
+    </div>
+    <div class="err" id="mbrErr"></div>
+    <div class="mactions">
+      <button class="btn primary" id="mbrSaveBtn" onclick="__saveMember()">Ajouter le membre</button>
+      <button class="btn" id="mbrCancelBtn" onclick="__cancelMemberEdit()" style="display:none">Annuler l'édition</button>
+    </div>`;
+}
+function openMembersPanel(){
+  MBR_EDIT_ID=null;
+  openModal(`<div class="mhead"><h3>Gestion des membres</h3><button class="x" onclick="__close()" aria-label="Fermer">✕</button></div>
+    ${memberFormHtml()}
+    <div class="mbr-list" id="mbrList"></div>`);
+  renderMembersList();
+}
+function fillMemberForm(id){
+  const m=DATA.membres.find(x=>x.id===id); if(!m) return;
+  MBR_EDIT_ID=id;
+  document.getElementById("m-nom").value=m.nom||"";
+  document.getElementById("m-prenom").value=m.prenom||"";
+  document.getElementById("m-naissance").value=m.naissance||"";
+  document.getElementById("m-email").value=m.email||"";
+  document.getElementById("m-tel").value=m.tel||"";
+  document.getElementById("m-multi").checked=!!m.multisports;
+  document.getElementById("m-hand").checked=!!m.handloisir;
+  document.getElementById("mbrSaveBtn").textContent="Enregistrer les modifications";
+  document.getElementById("mbrCancelBtn").style.display="inline-flex";
+  document.getElementById("mbrErr").textContent="";
+  document.getElementById("m-nom").scrollIntoView({block:"center"});
+}
+window.__cancelMemberEdit=function(){
+  MBR_EDIT_ID=null;
+  ["m-nom","m-prenom","m-naissance","m-email","m-tel"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("m-multi").checked=false;
+  document.getElementById("m-hand").checked=false;
+  document.getElementById("mbrSaveBtn").textContent="Ajouter le membre";
+  document.getElementById("mbrCancelBtn").style.display="none";
+  document.getElementById("mbrErr").textContent="";
+};
+window.__saveMember=function(){
+  const nom=document.getElementById("m-nom").value.trim();
+  const prenom=document.getElementById("m-prenom").value.trim();
+  const naissance=document.getElementById("m-naissance").value;
+  const email=document.getElementById("m-email").value.trim();
+  const tel=document.getElementById("m-tel").value.trim();
+  const multi=document.getElementById("m-multi").checked;
+  const hand=document.getElementById("m-hand").checked;
+  const errBox=document.getElementById("mbrErr");
+  if(!nom||!prenom){ errBox.textContent="Nom et prénom sont obligatoires."; return; }
+  if(!multi && !hand){ errBox.textContent="Cochez au moins une activité (Multisports ou Hand Loisir)."; return; }
+  errBox.textContent="";
+  if(MBR_EDIT_ID){
+    const m=DATA.membres.find(x=>x.id===MBR_EDIT_ID);
+    if(m){ Object.assign(m,{nom,prenom,naissance,email,tel,multisports:multi,handloisir:hand}); }
+  } else {
+    const id = (crypto.randomUUID ? crypto.randomUUID() : ("m"+Date.now()+Math.random().toString(36).slice(2)));
+    DATA.membres.push({id,nom,prenom,naissance,email,tel,multisports:multi,handloisir:hand});
+  }
+  __cancelMemberEdit();
+  renderMembersList();
+  saveMembres();
+};
+function deleteMember(id){
+  const m=DATA.membres.find(x=>x.id===id);
+  if(!m) return;
+  if(!confirm(`Supprimer ${m.prenom} ${m.nom} de la liste des membres ?`)) return;
+  DATA.membres = DATA.membres.filter(x=>x.id!==id);
+  if(MBR_EDIT_ID===id) __cancelMemberEdit();
+  renderMembersList();
+  saveMembres();
 }
 
 /* ---------- Suggestion d'ajout de sport ---------- */
@@ -608,6 +755,7 @@ function setView(showPast){
 }
 toggleUpcoming.onclick=()=>setView(!SHOW_PAST);
 document.getElementById("suggestBtn").onclick=openSuggestModal;
+document.getElementById("membersBtn").onclick=openMembersPanel;
 
 
 /* ---------- Sondage d'activités ---------- */
@@ -732,10 +880,12 @@ async function boot(){
       if(typeof d.lede==="string") lede.textContent=d.lede;
       if(d.links) DATA.links=d.links;
       if(d.poll) DATA.poll=d.poll;
+      if(Array.isArray(d.membres)) DATA.membres=d.membres;
     } else {
       DATA.links = DATA.links || {whatsapp:"",spotify:"",srg:""};
       DATA.poll = DATA.poll || {votes:{}, archives:[]};
-      await docRef.set({calendrier:stripCal(), sports:DATA.sports, info:DATA.info, lede:lede.textContent.trim(), links:DATA.links, poll:DATA.poll});
+      DATA.membres = DATA.membres || [];
+      await docRef.set({calendrier:stripCal(), sports:DATA.sports, info:DATA.info, lede:lede.textContent.trim(), links:DATA.links, poll:DATA.poll, membres:DATA.membres});
     }
   }catch(e){ console.error(e); toast("Connexion à la base impossible — affichage hors-ligne.",true); }
   DATA.links = DATA.links || {whatsapp:"",spotify:"",srg:""};
