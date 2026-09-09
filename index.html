@@ -9,14 +9,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#FCFBF8; --card:#FFFFFF;
+  --paper:#E5E5E5; --card:#FFFFFF;
   --ink:#16232E; --ink-soft:#5D6B75; --ink-faint:#93A0A8;
-  --line:#E7E3D9; --line-strong:#D8D3C6;
-  --flame:#E9531F; --flame-soft:#FCEAE0;
+  --line:#D6D6D6; --line-strong:#C2C2C2;
+  --flame:#153AA3; --flame-soft:#E4EAF9;
   --sea:#0E7C86; --sea-soft:#E3F1F0;
-  --gold:#C88A12; --gold-soft:#FBEFCF;
+  --gold:#F0A94E; --gold-soft:#FDF0DE;
   --green:#1E9E52; --green-soft:#E4F4E7; --green-line:#B7E0C0; --green-ink:#1C7A40;
-  --vac:#EFEDE6;
+  --vac:#C7C7C7; --vac-ink:#4A4F54;
   --shadow:0 1px 2px rgba(22,35,46,.04), 0 12px 30px -18px rgba(22,35,46,.25);
 }
 *{box-sizing:border-box}
@@ -28,13 +28,19 @@ a{color:var(--sea)}
 
 /* ---------- TOPBAR ---------- */
 .topbar{position:sticky; top:0; z-index:60; background:var(--ink); color:#fff}
-.topbar-wrap{max-width:1040px; margin:0 auto; padding:11px 20px; display:flex; align-items:center; justify-content:space-between; gap:14px}
-.tb-brand{font-family:"Archivo"; font-weight:800; font-size:14px; letter-spacing:.03em; display:flex; align-items:center; gap:8px}
-.tb-brand .b{background:var(--flame); padding:4px 8px; border-radius:6px; font-size:12px}
-.tb-brand span{font-weight:600; color:rgba(255,255,255,.7); font-size:13px}
-.modeBtn{font:inherit; font-size:13px; font-weight:600; padding:8px 14px; border-radius:999px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:background .12s}
+.topbar-wrap{max-width:1040px; margin:0 auto; padding:7px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; min-height:40px}
+.tb-left{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.tb-brand{font-family:"Archivo"; font-weight:800; font-size:12.5px; letter-spacing:.03em; display:flex; align-items:center; gap:7px}
+.tb-brand .b{background:var(--flame); padding:3px 7px; border-radius:5px; font-size:10.5px}
+.tb-brand span{font-weight:600; color:rgba(255,255,255,.65); font-size:11.5px}
+.tb-links{display:flex; align-items:center; gap:6px; flex-wrap:wrap}
+.tb-link{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:#fff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.22); border-radius:999px; padding:4px 10px 4px 8px; text-decoration:none; cursor:pointer; font-family:inherit}
+.tb-link:hover{background:rgba(255,255,255,.17)}
+.tb-link svg{width:12px; height:12px; flex:none}
+.tb-link.empty{border-style:dashed; opacity:.7}
+.modeBtn{font:inherit; font-size:12px; font-weight:600; padding:6px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:background .12s}
 .modeBtn:hover{background:rgba(255,255,255,.16)}
-.modeBtn .dotw{width:7px; height:7px; border-radius:50%; background:#93A0A8}
+.modeBtn .dotw{width:6px; height:6px; border-radius:50%; background:#93A0A8}
 .modeBtn.on{background:#1E9E52; border-color:#1E9E52; color:#fff}
 .modeBtn.on .dotw{background:#fff}
 
@@ -45,9 +51,10 @@ header{padding:40px 0 8px}
 h1{font-family:"Archivo"; font-weight:800; letter-spacing:-.02em; line-height:.95; margin:0; font-size:clamp(32px,5.5vw,56px); color:var(--ink);}
 h1 .yr{display:block; color:var(--flame); font-size:.6em; letter-spacing:.01em; margin-top:2px}
 .lede{margin:16px 0 0; color:var(--ink-soft); max-width:42ch; font-size:17px}
-.lede.editable{cursor:text; border-radius:8px; padding:2px 6px; margin-left:-6px}
-body.admin .lede.editable:hover{background:var(--sea-soft)}
-.lede.editable:focus{outline:2px solid var(--sea); background:#fff}
+.lede.editable{cursor:text; border:1.5px dashed var(--sea); border-radius:8px; padding:7px 32px 7px 10px; margin-left:-10px; position:relative; background:var(--sea-soft); transition:background .12s, border-color .12s}
+.lede.editable::after{content:"✎"; position:absolute; right:11px; top:11px; font-size:12px; color:var(--sea); opacity:.65}
+.lede.editable:hover{background:#fff}
+.lede.editable:focus{outline:none; border-style:solid; background:#fff; box-shadow:0 0 0 3px var(--sea-soft)}
 
 .ticket{position:relative; background:var(--card); border:1px solid var(--line-strong); border-radius:16px; padding:20px 22px; box-shadow:var(--shadow); overflow:hidden}
 .ticket::before{content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--flame)}
@@ -57,7 +64,7 @@ body.admin .lede.editable:hover{background:var(--sea-soft)}
 .ticket .act{margin-top:8px; font-size:16px}
 .ticket .act .p{font-weight:600}
 .ticket .meta{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px}
-.ticket .lieu{display:inline-block; font-size:11.5px; color:var(--sea); background:var(--sea-soft); border-radius:6px; padding:2px 8px; font-weight:600; margin:0}
+.ticket .lieu{margin:0}
 
 /* ---------- CALENDAR ---------- */
 .cal-head{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin:34px 0 12px}
@@ -94,15 +101,20 @@ tr.mrow:first-child td{border-top:0}
 .todayTag{display:inline-block; font-size:10.5px; font-weight:700; color:#fff; background:var(--flame); padding:2px 7px; border-radius:6px; margin-left:8px; vertical-align:middle}
 tr.s-ok{box-shadow:inset 3px 0 0 var(--sea)}
 tr.s-tournoi{box-shadow:inset 3px 0 0 var(--gold); background:var(--gold-soft)}
-tr.s-vacances{background:var(--vac); color:var(--ink-soft); box-shadow:inset 3px 0 0 var(--line-strong)}
-tr.s-vacances .dcell .dnum{color:var(--ink-soft)}
+tr.s-vacances{background:var(--vac); color:var(--vac-ink); box-shadow:inset 3px 0 0 var(--line-strong)}
+tr.s-vacances .dcell .dnum{color:var(--vac-ink)}
 tr.today{background:var(--flame-soft) !important; box-shadow:inset 3px 0 0 var(--flame)}
 .vacLabel{font-weight:600}
 
-.edit{cursor:text; border-radius:6px; padding:2px 6px; margin:-2px -6px; min-height:22px; transition:background .1s; display:inline-block}
-body.admin .edit:hover{background:var(--sea-soft)}
-.edit:focus{outline:2px solid var(--sea); background:#fff}
-.edit:empty::before{content:attr(data-ph); color:var(--ink-faint); font-style:italic}
+.editWrap{position:relative; display:block; width:100%}
+.edit{width:100%; font:inherit; font-size:15px; padding:6px 26px 6px 9px; border:1.5px dashed var(--sea); border-radius:8px; background:var(--sea-soft); color:var(--ink); transition:background .12s, border-color .12s}
+.edit::placeholder{color:var(--ink-faint); font-style:italic}
+.edit:hover{background:#fff}
+.edit:focus{outline:none; border-style:solid; background:#fff; box-shadow:0 0 0 3px var(--sea-soft)}
+.editWrap .pencil{position:absolute; right:8px; top:50%; transform:translateY(-50%); font-size:11px; color:var(--sea); opacity:.6; pointer-events:none}
+.sugg{margin-top:6px; font-size:12px; color:var(--ink-soft); display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.sugg button{font:inherit; font-size:11.5px; font-weight:700; color:var(--green-ink); background:var(--green-soft); border:1px solid var(--green-line); border-radius:999px; padding:3px 10px; cursor:pointer}
+.sugg button:hover{background:var(--green-line)}
 
 /* ---------- RÉPERTOIRE ---------- */
 .repertoire{margin:48px 0 10px; padding-top:30px; border-top:1px solid var(--line)}
@@ -176,10 +188,14 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
 <body>
 <div class="topbar">
   <div class="topbar-wrap">
-    <span class="tb-brand"><span class="b">SRG</span><span>Multisports · Saint-Renan Guilers</span></span>
+    <div class="tb-left">
+      <span class="tb-brand"><span class="b">SRG</span><span>Multisports · Saint-Renan Guilers</span></span>
+      <span class="tb-links" id="tbLinks"></span>
+    </div>
     <button class="modeBtn" id="modeBtn"><span class="dotw"></span>Mode lecture</button>
   </div>
 </div>
+<datalist id="sportsList"></datalist>
 
 <div class="wrap">
   <header>
@@ -308,15 +324,17 @@ function renderTicket(){
 const NODE=["var(--flame)","var(--sea)","var(--gold)"];
 function readCell(c,f){
   if(f==="princ"){ if(c.state==="vacances")return `<span class="vacLabel">Vacances scolaires</span>`;
-    if(c.princ===""||c.princ==="-")return `<span class="free">Créneau libre</span>`;
+    if(c.princ===""||c.princ==="-")return `<span class="free">-</span>`;
     return `<span class="act-name">${esc(c.princ)}</span>`; }
   if(f==="sec"){ if(c.state==="vacances")return ""; return REAL(c.sec)?`<span class="act-name">${esc(c.sec)}</span>`:`<span class="act-name dash">—</span>`; }
   if(f==="note"){ if(!c.note)return ""; return (/Apéro/i.test(c.note)?`<span class="aperoBadge">Apéro</span>`:"")+`<span class="note">${esc(c.note)}</span>`; }
 }
 function editCell(c,f){
   const ph=f==="princ"?"Activité…":f==="sec"?"—":"Note…";
-  const val=(f==="princ"?c.princ:f==="sec"?c.sec:c.note)||"";
-  return `<span class="edit" contenteditable="true" data-ph="${ph}" data-f="${f}">${esc(val)}</span>`;
+  let val=(f==="princ"?c.princ:f==="sec"?c.sec:c.note)||"";
+  if(val==="-")val="";
+  const list=(f==="princ"||f==="sec")?` list="sportsList"`:"";
+  return `<span class="editWrap"><input class="edit" data-f="${f}" placeholder="${ph}" value="${esc(val)}"${list}><span class="pencil">✎</span></span>`;
 }
 function renderCal(){
   let html="", curMonth=null, mi=-1;
@@ -337,26 +355,77 @@ function renderCal(){
   body.innerHTML = html || `<tr><td colspan="4" style="padding:22px 16px;color:var(--ink-faint);font-style:italic">Aucune séance à venir — la saison est terminée.</td></tr>`;
   if(ADMIN){
     body.querySelectorAll(".edit").forEach(el=>{
+      el.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); el.blur(); } });
       el.addEventListener("blur",()=>{
-        const tr=el.closest("tr"), c=DATA.calendrier[+tr.dataset.idx], f=el.dataset.f;
-        const v=el.textContent.trim();
+        const tr=el.closest("tr"), idx=+tr.dataset.idx, c=DATA.calendrier[idx], f=el.dataset.f;
+        const v=el.value.trim();
         if(f==="princ")c.princ=v; else if(f==="sec")c.sec=v; else c.note=v;
         recompute(c); renderCal(); renderTicket(); renderChips(); saveCalendrier();
+        if(f==="princ"||f==="sec") maybeSuggestAdd(idx,f,v);
       });
     });
   }
 }
 
+/* ---------- Suggestion d'ajout de sport ---------- */
+function maybeSuggestAdd(idx,f,value){
+  if(!value || value==="-") return;
+  const exists = DATA.sports.some(s=>s.nom.toLowerCase()===value.toLowerCase());
+  if(exists) return;
+  const label = f==="princ" ? "Activité principale" : "Activité secondaire";
+  const wrap = document.querySelector(`tr[data-idx="${idx}"] td[data-l="${label}"] .editWrap`);
+  if(!wrap) return;
+  const box=document.createElement("div");
+  box.className="sugg";
+  box.innerHTML=`<span>« ${esc(value)} » n'est pas encore dans la liste.</span><button type="button">+ Ajouter comme sport</button>`;
+  box.querySelector("button").onclick=()=>openAdd(value);
+  wrap.parentElement.appendChild(box);
+}
+
 /* ---------- Répertoire ---------- */
 function freq(nom){let n=0; DATA.calendrier.forEach(c=>{[c.princ,c.sec].forEach(v=>{if(v&&v!=="-"&&v!=="Vacances"&&v.toLowerCase()===nom.toLowerCase())n++;});}); return n;}
 function renderChips(){
-  let html=DATA.sports.map((s,idx)=>{const f=freq(s.nom),cls=f>=2?"f2":f===1?"f1":"f0";
+  const ranked=DATA.sports.map((s,idx)=>({s,idx,f:freq(s.nom)}))
+    .sort((a,b)=> b.f-a.f || a.s.nom.localeCompare(b.s.nom,"fr"));
+  let html=ranked.map(({s,idx,f})=>{const cls=f>=2?"f2":f===1?"f1":"f0";
     return `<button class="chip ${cls}" data-i="${idx}">${esc(s.nom)}<span class="cnt">${f}</span></button>`;}).join("");
   html+=`<button class="chip add only-admin" id="addBtn"><span class="plus">+</span> Ajouter un sport</button>`;
   const box=document.getElementById("chips"); box.innerHTML=html;
   box.querySelectorAll(".chip[data-i]").forEach(b=>b.onclick=()=>openSport(DATA.sports[+b.dataset.i]));
-  const ab=document.getElementById("addBtn"); if(ab)ab.onclick=openAdd;
+  const ab=document.getElementById("addBtn"); if(ab)ab.onclick=()=>openAdd();
+  const dl=document.getElementById("sportsList");
+  if(dl) dl.innerHTML=DATA.sports.map(s=>`<option value="${esc(s.nom)}">`).join("");
+  renderLinks();
 }
+
+/* ---------- Liens WhatsApp / Spotify ---------- */
+const ICON_WA = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Z" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 8.8c.3-.7 1-1.7 1.6-1.1.5.5 1 1.4.6 2-.4.6-.9.6-.5 1.3.5.9 1.7 2 2.6 2.4.6.3.7-.2 1.2-.6.5-.4 1.4 0 1.9.5.6.6-.5 1.6-1.1 1.8-1.2.5-3-.1-4.6-1.6-1.4-1.3-2.1-2.8-1.7-4.7Z" fill="currentColor"/></svg>';
+const ICON_SP = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M7 10.2c3-1 7-.6 9.6 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7.6 13c2.4-.7 5.6-.4 7.7.9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M8.2 15.6c1.8-.5 4.2-.3 5.8.7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>';
+function renderLinks(){
+  const L = DATA.links || {whatsapp:"",spotify:""};
+  const box=document.getElementById("tbLinks"); if(!box)return;
+  const mk=(key,label,svg)=>{
+    const url=(L[key]||"").trim();
+    if(ADMIN) return `<button type="button" class="tb-link${url?"":" empty"}" data-link="${key}">${svg}${url?label:"+ "+label}</button>`;
+    if(url) return `<a class="tb-link" href="${esc(url)}" target="_blank" rel="noopener">${svg}${label}</a>`;
+    return "";
+  };
+  box.innerHTML = mk("whatsapp","WhatsApp",ICON_WA)+mk("spotify","Spotify",ICON_SP);
+  box.querySelectorAll("button[data-link]").forEach(b=>b.onclick=()=>openLinkEdit(b.dataset.link));
+}
+function openLinkEdit(key){
+  const cur=(DATA.links&&DATA.links[key])||"";
+  const label = key==="whatsapp" ? "Lien du groupe WhatsApp" : "Lien de la playlist Spotify";
+  openModal(`<div class="mhead"><h3>${label}</h3><button class="x" onclick="__close()" aria-label="Fermer">✕</button></div>
+    <div class="field"><label>URL</label><input id="lk-url" value="${esc(cur)}" placeholder="https://..."></div>
+    <div class="mactions"><button class="btn primary" onclick="__saveLink('${key}')">Enregistrer</button><button class="btn" onclick="__close()">Annuler</button></div>`);
+}
+window.__saveLink=async function(key){
+  const v=document.getElementById("lk-url").value.trim();
+  DATA.links = DATA.links||{}; DATA.links[key]=v;
+  closeModal(); renderLinks();
+  try{ await docRef.update({links:DATA.links}); toast("Lien enregistré."); }catch(e){ console.error(e); toast("Échec de l'enregistrement du lien.",true); }
+};
 
 /* ---------- Modal ---------- */
 const ov=document.getElementById("ov"), modal=document.getElementById("modal");
@@ -407,9 +476,9 @@ window.__saveSport=function(nom){
   const sp=DATA.sports.find(s=>s.nom===nom); if(sp)sp.lieu=lieu;
   rebuildLieu(); closeModal(); renderChips(); renderTicket(); saveSports();
 };
-function openAdd(){
+function openAdd(prefill){
   openModal(`<div class="mhead"><h3>Ajouter un sport</h3><button class="x" onclick="__close()" aria-label="Fermer">✕</button></div>
-    <div class="field"><label>Nom de l'activité *</label><input id="f-nom" placeholder="Ex. Tchoukball"></div>
+    <div class="field"><label>Nom de l'activité *</label><input id="f-nom" placeholder="Ex. Tchoukball" value="${esc(prefill||"")}"></div>
     <div class="field"><label>Notes / résumé</label><textarea id="f-res" rows="2" placeholder="En une phrase, c'est quoi ?"></textarea></div>
     <div class="field"><label>Détails</label><input id="f-det" placeholder="Ex. 7 joueurs · intérieur"></div>
     <div class="field"><label>Lieu</label><input id="f-lieu" placeholder="Ex. Kerzouar"></div>
@@ -430,6 +499,7 @@ function updateModeBtn(){
   const b=document.getElementById("modeBtn");
   b.innerHTML = ADMIN ? `<span class="dotw"></span>Mode admin — quitter` : `<span class="dotw"></span>Mode lecture`;
   b.classList.toggle("on",ADMIN);
+  renderLinks();
 }
 function setLedeEditable(on){ const l=document.getElementById("lede"); l.classList.toggle("editable",on); l.contentEditable=on?"true":"false"; }
 function openLogin(){
@@ -472,14 +542,17 @@ async function boot(){
       if(Array.isArray(d.sports)&&d.sports.length) DATA.sports=d.sports;
       if(d.info) DATA.info=d.info;
       if(typeof d.lede==="string") lede.textContent=d.lede;
+      if(d.links) DATA.links=d.links;
     } else {
-      await docRef.set({calendrier:stripCal(), sports:DATA.sports, info:DATA.info, lede:lede.textContent.trim()});
+      DATA.links = DATA.links || {whatsapp:"",spotify:""};
+      await docRef.set({calendrier:stripCal(), sports:DATA.sports, info:DATA.info, lede:lede.textContent.trim(), links:DATA.links});
     }
   }catch(e){ console.error(e); toast("Connexion à la base impossible — affichage hors-ligne.",true); }
+  DATA.links = DATA.links || {whatsapp:"",spotify:""};
   lede.dataset.prev = lede.textContent.trim();
   DATA.calendrier.forEach(c=>recompute(c));
   rebuildLieu();
-  renderTicket(); renderCal(); renderChips();
+  renderTicket(); renderCal(); renderChips(); renderLinks();
 }
 updateModeBtn();
 boot();
