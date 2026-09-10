@@ -166,7 +166,7 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 .link-menu input{font:inherit; font-size:13px; padding:6px 8px; border:1px solid var(--line-strong); border-radius:6px; background:var(--paper); color:var(--ink); width:180px}
 .link-menu button{font:inherit; font-size:12.5px; font-weight:600; padding:6px 10px; border-radius:6px; border:1px solid var(--sea); background:var(--sea-soft); color:var(--sea); cursor:pointer; white-space:nowrap}
 .link-menu button:hover{background:var(--sea); color:#fff}
-.note a, .memo-text a{color:inherit; text-decoration:underline}
+.note a, .memo-text a{color:var(--highlight); font-weight:600; text-decoration:underline}
 .memo-text.editable{cursor:text; border:1.5px dashed var(--sea); border-radius:8px; padding:7px 32px 7px 10px; margin:-7px -10px; position:relative; background:var(--sea-soft)}
 .memo-text.editable::after{content:"✎"; position:absolute; right:11px; top:11px; font-size:12px; color:var(--sea); opacity:.65}
 .memo-text.editable:hover{background:var(--card)}
@@ -498,8 +498,10 @@ function createLinkMenu(el, onApply){
     }
     if(sel.isCollapsed) return;
     e.preventDefault();
+    // Toute perte de focus de la zone éditable (donc tout champ de saisie sur la page)
+    // invalide la sélection de texte — c'est une contrainte du navigateur, pas du code.
     // window.prompt() est une boîte de dialogue du navigateur, pas un élément de la page :
-    // elle ne vole donc jamais le focus ni n'invalide la sélection de texte en cours.
+    // elle ne vole donc jamais le focus ni n'invalide la sélection en cours.
     const url = window.prompt("Lien à associer au texte sélectionné :", "https://");
     if(!url) return;
     let href=url.trim(); if(!/^https?:\/\//i.test(href)) href="https://"+href;
