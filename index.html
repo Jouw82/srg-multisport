@@ -150,6 +150,20 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 /* ---------- RÉPERTOIRE ---------- */
 .repertoire{margin:48px 0 10px; padding-top:30px; border-top:1px solid var(--line)}
 
+.dash-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:26px 0}
+.dash-card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; box-shadow:var(--shadow)}
+.dash-card h3{font-family:"Archivo"; font-weight:700; font-size:13.5px; margin:0 0 10px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; display:flex; align-items:center; gap:8px}
+.bday-item{display:flex; align-items:center; gap:10px; padding:6px 0; font-size:14px}
+.bday-item .d{font-family:"Archivo"; font-weight:700; font-size:13px; color:var(--sea); background:var(--sea-soft); border-radius:8px; padding:3px 8px; flex:none}
+.memo-text{font-size:14px; color:var(--ink); white-space:pre-wrap; line-height:1.5; min-height:20px}
+.memo-text:empty::before{content:"Aucune actualité pour l'instant."; color:var(--ink-faint); font-style:italic}
+.memo-text.editable{cursor:text; border:1.5px dashed var(--sea); border-radius:8px; padding:7px 32px 7px 10px; margin:-7px -10px; position:relative; background:var(--sea-soft)}
+.memo-text.editable::after{content:"✎"; position:absolute; right:11px; top:11px; font-size:12px; color:var(--sea); opacity:.65}
+.memo-text.editable:hover{background:var(--card)}
+.memo-text.editable:focus{outline:none; border-style:solid; background:var(--card); box-shadow:0 0 0 3px var(--sea-soft)}
+@media(max-width:820px){.dash-grid{grid-template-columns:1fr}}
+
+
 .profileBtn{font-size:12px; height:32px; padding:0 14px; box-sizing:border-box; border-radius:9px; border:0; background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:7px; font:inherit; font-weight:600}
 .profileBtn:hover{background:rgba(255,255,255,.22)}
 .profileBtn.on{background:#1E9E52; border-color:#1E9E52}
@@ -172,7 +186,7 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 .mbr-row .sub{color:var(--ink-soft); font-size:12px; margin-top:2px}
 .mbr-row .tags{display:flex; gap:5px; margin-top:5px; flex-wrap:wrap}
 .mbr-tag{font-size:10.5px; font-weight:700; padding:2px 7px; border-radius:999px; background:var(--sea-soft); color:var(--sea)}
-.mbr-actions{display:flex; gap:6px; flex:none}
+.mbr-actions{display:flex; gap:6px; flex:none; flex-wrap:wrap; max-width:150px; justify-content:flex-end}
 .mbr-actions button{font:inherit; font-size:12px; font-weight:600; border:1px solid var(--line-strong); background:var(--card); color:var(--ink-soft); border-radius:8px; padding:5px 9px; cursor:pointer}
 .mbr-actions button:hover{background:var(--paper)}
 .mbr-actions button.danger{color:#C0341A; border-color:#C0341A}
@@ -196,7 +210,8 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 .poll{margin:48px 0 10px; padding-top:30px; border-top:1px solid var(--line)}
 .poll h2{font-family:"Archivo"; font-weight:700; font-size:20px; margin:0}
 .poll .sub{color:var(--ink-soft); font-size:14.5px; margin:8px 0 18px}
-.btn.suggestBtn{font-size:13px; padding:8px 14px; display:inline-flex; align-items:center; gap:8px; border:1.5px solid var(--green); color:var(--ink)}
+.btn.suggestBtn{font-size:12px; padding:6px 11px; display:inline-flex; align-items:center; gap:6px; border:1.5px solid var(--green); color:var(--ink)}
+.btn.sportsJump{font-size:12px; padding:6px 11px}
 .suggestBtn .cnt{font-size:10px; font-weight:700; border-radius:999px; min-width:16px; height:16px; padding:0 4px; display:inline-flex; align-items:center; justify-content:center; background:var(--sea); color:#fff}
 .vote-chips{display:flex; flex-wrap:wrap; gap:7px; max-height:260px; overflow:auto; padding:2px}
 .vchip{font:inherit; font-size:12.5px; font-weight:600; padding:6px 11px; border-radius:8px; cursor:pointer; border:1.5px solid var(--line); background:var(--card); color:var(--ink); display:inline-flex; align-items:center; gap:6px; transition:transform .08s, box-shadow .12s, background .12s, border-color .12s}
@@ -330,6 +345,17 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
     </div>
   </header>
 
+  <div class="dash-grid">
+    <div class="dash-card">
+      <h3>Prochains anniversaires</h3>
+      <div id="bdayBox"><p class="mbr-empty">—</p></div>
+    </div>
+    <div class="dash-card">
+      <h3>Actualités <span class="only-admin" id="memoEditHint" style="font-weight:500;font-size:11px;color:var(--sea)">(cliquez pour éditer)</span></h3>
+      <div id="memoBox"><div class="memo-text" id="memoText"></div></div>
+    </div>
+  </div>
+
   <div class="membersRow">
     <button type="button" class="btn adminRoleOnly" id="membersBtn">Gestion des membres</button>
   </div>
@@ -340,6 +366,7 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
         <span class="sw-label">À venir</span>
       </button>
       <button type="button" class="btn suggestBtn" id="suggestBtn">Suggérer une activité<span class="cnt" id="suggestCnt" style="display:none"></span></button>
+      <button type="button" class="btn sportsJump" id="sportsJumpBtn">Liste des sports</button>
     </div>
     <div class="legend">
       <span><i class="lg-ok"></i>Programmée</span>
@@ -722,6 +749,11 @@ window.__resyncIndex=async function(){
     toast("Index des noms resynchronisé ("+idx.length+" membre"+(idx.length>1?"s":"")+").");
   }catch(e){ console.error(e); toast("Échec de la resynchronisation.",true); }
 };
+function currentPassword(m){
+  const base=genPassword(m.nom, m.naissance);
+  const gen=m.pwGen||0;
+  return gen>0 ? `${base}-${gen}` : base;
+}
 function renderMembersList(){
   const box=document.getElementById("mbrList"); if(!box) return;
   if(!MBR_LIST.length){ box.innerHTML=`<p class="mbr-empty">Aucun membre enregistré pour l'instant.</p>`; return; }
@@ -736,11 +768,35 @@ function renderMembersList(){
       </div>
       <div class="mbr-actions">
         <button type="button" data-edit="${m.id}">Éditer</button>
+        ${m.role!=="chefadmin"?`<button type="button" data-pw="${m.id}">Réinitialiser le mot de passe</button>`:""}
         <button type="button" class="danger" data-del="${m.id}">Supprimer</button>
       </div>
     </div>`).join("");
   box.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>fillMemberForm(b.dataset.edit));
   box.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>deleteMember(b.dataset.del));
+  box.querySelectorAll("[data-pw]").forEach(b=>b.onclick=()=>resetMemberPassword(b.dataset.pw));
+}
+async function resetMemberPassword(id){
+  const m=MBR_LIST.find(x=>x.id===id); if(!m) return;
+  if(m.role==="chefadmin"){ toast("Le mot de passe d'un chef admin ne peut pas être réinitialisé ici.",true); return; }
+  if(!confirm(`Réinitialiser le mot de passe de ${m.prenom} ${m.nom} ? L'ancien ne fonctionnera plus.`)) return;
+  const oldPw = currentPassword(m);
+  const newGen = (m.pwGen||0)+1;
+  const newPw = currentPassword(Object.assign({},m,{pwGen:newGen}));
+  try{
+    const sAuth = getSecondaryAuth();
+    await sAuth.signInWithEmailAndPassword(m.loginEmail||m.email, oldPw);
+    await sAuth.currentUser.updatePassword(newPw);
+    await sAuth.signOut();
+    await db.collection("membres").doc(id).update({pwGen:newGen});
+    m.pwGen=newGen;
+    toast("Mot de passe réinitialisé.");
+    const box=document.getElementById("mbrPwBox");
+    if(box) box.innerHTML = `<div class="pw-reveal">Nouveau mot de passe pour ${esc(m.prenom)} ${esc(m.nom)} : <b>${esc(newPw)}</b><br>Communiquez-le-lui — il ne sera plus jamais affiché.</div>`;
+  }catch(e){
+    console.error(e);
+    toast("Échec de la réinitialisation : "+(e&&e.message?e.message:"erreur inconnue"),true);
+  }
 }
 function fillMemberForm(id){
   const m=MBR_LIST.find(x=>x.id===id); if(!m) return;
@@ -813,7 +869,8 @@ window.__saveMember=async function(){
     const membre={nom,prenom,naissance,email,tel,multisports:multi,handloisir:hand,role,loginEmail};
     await db.collection("membres").doc(uid).set(membre);
     const idx = await loadPublicIndex();
-    idx.push({uid,nom,prenom,loginEmail});
+    const [ny,nm,nd] = naissance.split("-").map(Number);
+    idx.push({uid,nom,prenom,loginEmail,jour:nd,mois:nm});
     await savePublicIndex(idx);
     await sAuth.signOut();
     MBR_LIST.push(Object.assign({id:uid},membre));
@@ -851,7 +908,7 @@ async function deleteMember(id){
   }
   if(!confirm(`Supprimer ${m.prenom} ${m.nom} de la liste des membres ? Son compte de connexion sera aussi supprimé.`)) return;
   try{
-    const password = genPassword(m.nom, m.naissance);
+    const password = currentPassword(m);
     const sAuth = getSecondaryAuth();
     await sAuth.signInWithEmailAndPassword(m.loginEmail || m.email, password);
     await sAuth.currentUser.delete();
@@ -868,6 +925,37 @@ async function deleteMember(id){
   }catch(e){ console.error(e); toast("Échec de la suppression de la fiche.",true); }
 }
 
+
+/* ---------- Anniversaires (public, automatique) ---------- */
+function renderBirthdays(list){
+  const box=document.getElementById("bdayBox"); if(!box) return;
+  const withBday=(list||[]).filter(m=>m.jour&&m.mois);
+  if(!withBday.length){ box.innerHTML=`<p class="mbr-empty">Aucune date enregistrée.</p>`; return; }
+  const today=new Date(); today.setHours(0,0,0,0);
+  const MO=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+  const withNext=withBday.map(m=>{
+    let next=new Date(today.getFullYear(), m.mois-1, m.jour);
+    if(next<today) next=new Date(today.getFullYear()+1, m.mois-1, m.jour);
+    return {m,next};
+  }).sort((a,b)=>a.next-b.next).slice(0,2);
+  box.innerHTML=withNext.map(({m,next})=>
+    `<div class="bday-item"><span class="d">${next.getDate()} ${MO[next.getMonth()]}</span><span>${esc(m.prenom)} ${esc(m.nom)}</span></div>`
+  ).join("");
+}
+
+/* ---------- Actualités (texte libre, éditable par les admins) ---------- */
+function renderMemo(){
+  const el=document.getElementById("memoText"); if(!el) return;
+  el.textContent = DATA.memo||"";
+}
+function setMemoEditable(on){
+  const el=document.getElementById("memoText"); if(!el) return;
+  el.classList.toggle("editable",on); el.contentEditable=on?"true":"false";
+}
+async function saveMemo(v){
+  try{ await docRef.update({memo:v}); toast("Actualité enregistrée."); }
+  catch(e){ console.error(e); toast("Échec de l'enregistrement.",true); }
+}
 /* ---------- Suggestion d'ajout de sport ---------- */
 function maybeSuggestAdd(idx,f,value){
   if(!value || value==="-") return;
@@ -1015,6 +1103,7 @@ function applyAdminState(){
   document.body.classList.toggle("admin", ADMIN);
   document.body.classList.toggle("role-admin", IS_ADMIN_ROLE);
   setLedeEditable(ADMIN);
+  setMemoEditable(ADMIN);
   updateEditToggleBtn();
   renderCal(); renderChips(); renderLinks();
   if(DATA.poll) renderResults();
@@ -1041,6 +1130,12 @@ lede.addEventListener("blur",()=>{
   const v=lede.textContent.trim();
   if(v!==lede.dataset.prev){ lede.dataset.prev=v; saveLede(v); }
 });
+const memoText=document.getElementById("memoText");
+memoText.addEventListener("blur",()=>{
+  if(!ADMIN)return;
+  const v=memoText.textContent.trim();
+  if(v!==(DATA.memo||"")){ DATA.memo=v; saveMemo(v); }
+});
 
 /* ---------- Vue Saison complète / À venir ---------- */
 const toggleUpcoming=document.getElementById("toggleUpcoming");
@@ -1054,6 +1149,10 @@ document.getElementById("suggestBtn").onclick=function(e){
   if(CURRENT_MEMBRE){ openSuggestModal(); return; }
   e.stopPropagation();
   requireLogin(openSuggestModal);
+};
+document.getElementById("sportsJumpBtn").onclick=function(){
+  const el=document.querySelector(".repertoire");
+  if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
 };
 document.getElementById("membersBtn").onclick=openMembersPanel;
 
@@ -1204,6 +1303,8 @@ async function boot(){
   DATA.poll = DATA.poll || {votes:{}, archives:[]};
   renderTicket(); renderCal(); renderChips(); renderLinks();
   updateSuggestBadge();
+  renderMemo();
+  loadPublicIndex().then(renderBirthdays);
   BOOTED = true;
   applyAdminState();
 }
