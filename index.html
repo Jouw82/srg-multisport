@@ -53,7 +53,7 @@ a{color:var(--sea)}
 .topbar{position:sticky; top:0; z-index:60; background:var(--ink); color:#fff}
 .topbar-wrap{max-width:1040px; margin:0 auto; padding:7px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; min-height:40px}
 .tb-brand{font-family:"Archivo"; font-weight:800; font-size:12.5px; letter-spacing:.03em; display:flex; align-items:center; gap:7px; flex:0 0 auto}
-.tb-brand .b{background:var(--flame); padding:3px 7px; border-radius:5px; font-size:10.5px}
+.tb-brand .b{background:#153AA3; padding:3px 7px; border-radius:5px; font-size:10.5px}
 .tb-brand span{font-weight:600; color:#dfab2d; font-size:12px}
 .tb-links{display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; flex:1 1 auto}
 .tb-link{display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:#fff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.22); border-radius:999px; padding:4px 10px 4px 8px; text-decoration:none; cursor:pointer; font-family:inherit}
@@ -505,6 +505,13 @@ function renderCal(){
 let CURRENT_USER = null;   // objet Firebase Auth (this session)
 let CURRENT_MEMBRE = null; // fiche /membres/{uid} correspondante
 
+function slugify(s){
+  return (s||"").toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g,"").slice(0,20) || "membre";
+}
+function genLoginEmail(prenom, nom){
+  const rand = Math.random().toString(36).slice(2,8);
+  return `${slugify(prenom)}.${slugify(nom)}.${rand}@membres.srg.local`;
+}
 function genPassword(nom, naissance){
   const letters=(nom||"").toUpperCase().normalize("NFD").replace(/[^A-Z]/g,"");
   const arr=[letters[0]||"-", letters[1]||"-", letters[2]||"-"];
@@ -570,13 +577,14 @@ function getRememberedProfile(){
   try{ const v=localStorage.getItem("srg_last_login"); return v?JSON.parse(v):null; }catch(e){ return null; }
 }
 function rememberProfile(m){
-  try{ localStorage.setItem("srg_last_login", JSON.stringify({uid:m.uid,nom:m.nom,prenom:m.prenom,email:m.email})); }catch(e){}
+  try{ localStorage.setItem("srg_last_login", JSON.stringify({uid:m.uid,nom:m.nom,prenom:m.prenom,loginEmail:m.loginEmail||m.email})); }catch(e){}
 }
 function showPasswordStep(dd, m){
+  const le = m.loginEmail || m.email;
   dd.innerHTML = `<p class="resume" style="font-size:13.5px;color:var(--ink-soft);margin:0 0 10px">${esc(m.prenom)} ${esc(m.nom)} <button type="button" id="notMeBtn" style="font:inherit;font-size:12px;color:var(--sea);background:none;border:0;cursor:pointer;text-decoration:underline;padding:0;margin-left:6px">Ce n'est pas moi</button></p>
-    <div class="field"><label>Mot de passe</label><input id="login-pw" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')__doLogin('${esc(m.uid).replace(/'/g,"\\'")}','${esc(m.email).replace(/'/g,"\\'")}')"></div>
+    <div class="field"><label>Mot de passe</label><input id="login-pw" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')__doLogin('${esc(m.uid).replace(/'/g,"\\'")}','${esc(le).replace(/'/g,"\\'")}')"></div>
     <div class="err" id="loginErr"></div>
-    <div class="mactions"><button class="btn primary" onclick="__doLogin('${esc(m.uid).replace(/'/g,"\\'")}','${esc(m.email).replace(/'/g,"\\'")}')">Se connecter</button></div>`;
+    <div class="mactions"><button class="btn primary" onclick="__doLogin('${esc(m.uid).replace(/'/g,"\\'")}','${esc(le).replace(/'/g,"\\'")}')">Se connecter</button></div>`;
   document.getElementById("notMeBtn").onclick=()=>renderLoginDropdown(true);
   document.getElementById("login-pw").focus();
 }
@@ -600,10 +608,11 @@ async function renderLoginDropdown(forceList){
     document.querySelectorAll("#namePick .name-opt").forEach(x=>x.classList.remove("picked"));
     b.classList.add("picked");
     const m=list.find(x=>x.uid===b.dataset.uid);
+    const le=m.loginEmail||m.email;
     document.getElementById("pwStep").innerHTML=`
-      <div class="field"><label>Mot de passe</label><input id="login-pw" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')__doLogin('${esc(m.uid).replace(/'/g,"\\'")}','${esc(m.email).replace(/'/g,"\\'")}')"></div>
+      <div class="field"><label>Mot de passe</label><input id="login-pw" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')__doLogin('${esc(m.uid).replace(/'/g,"\\'")}','${esc(le).replace(/'/g,"\\'")}')"></div>
       <div class="err" id="loginErr"></div>
-      <div class="mactions"><button class="btn primary" onclick="__doLogin('${esc(m.uid).replace(/'/g,"\\'")}','${esc(m.email).replace(/'/g,"\\'")}')">Se connecter</button></div>`;
+      <div class="mactions"><button class="btn primary" onclick="__doLogin('${esc(m.uid).replace(/'/g,"\\'")}','${esc(le).replace(/'/g,"\\'")}')">Se connecter</button></div>`;
     document.getElementById("login-pw").focus();
   });
 }
@@ -643,12 +652,7 @@ window.__saveProfile=async function(){
   const tel=document.getElementById("p-tel").value.trim();
   const err=document.getElementById("profErr");
   try{
-    const emailChanged = email!==CURRENT_MEMBRE.email;
     await db.collection("membres").doc(CURRENT_USER.uid).update({email,tel});
-    if(emailChanged){
-      try{ await CURRENT_USER.updateEmail(email); }
-      catch(e2){ console.error(e2); toast("Email mis à jour dans votre fiche, mais pas sur votre connexion — reconnectez-vous si besoin.",true); }
-    }
     CURRENT_MEMBRE.email=email; CURRENT_MEMBRE.tel=tel;
     closeProfileDropdown(); toast("Profil mis à jour.");
   }catch(e){ console.error(e); err.textContent="Échec de l'enregistrement."; }
@@ -797,18 +801,19 @@ window.__saveMember=async function(){
   }
 
   const password = genPassword(nom, naissance);
+  const loginEmail = genLoginEmail(prenom, nom);
   const saveBtn=document.getElementById("mbrSaveBtn");
   saveBtn.disabled=true; saveBtn.textContent="Création du compte…";
   let cred=null, sAuth=null, createdUid=null;
   try{
     sAuth = getSecondaryAuth();
-    cred = await sAuth.createUserWithEmailAndPassword(email, password);
+    cred = await sAuth.createUserWithEmailAndPassword(loginEmail, password);
     const uid = cred.user.uid;
     createdUid = uid;
-    const membre={nom,prenom,naissance,email,tel,multisports:multi,handloisir:hand,role};
+    const membre={nom,prenom,naissance,email,tel,multisports:multi,handloisir:hand,role,loginEmail};
     await db.collection("membres").doc(uid).set(membre);
     const idx = await loadPublicIndex();
-    idx.push({uid,nom,prenom,email});
+    idx.push({uid,nom,prenom,loginEmail});
     await savePublicIndex(idx);
     await sAuth.signOut();
     MBR_LIST.push(Object.assign({id:uid},membre));
@@ -828,9 +833,7 @@ window.__saveMember=async function(){
         try{ await db.collection("membres").doc(createdUid).delete(); }catch(e4){ console.error("rollback fiche échoué",e4); }
       }
     }
-    errBox.textContent = (e && e.code==="auth/email-already-in-use")
-      ? "Cet email a déjà un compte."
-      : "Échec de la création : " + (e && e.message ? e.message : "erreur inconnue");
+    errBox.textContent = "Échec de la création : " + (e && e.message ? e.message : "erreur inconnue");
   }
   saveBtn.disabled=false; saveBtn.textContent="Ajouter le membre";
 };
@@ -850,7 +853,7 @@ async function deleteMember(id){
   try{
     const password = genPassword(m.nom, m.naissance);
     const sAuth = getSecondaryAuth();
-    await sAuth.signInWithEmailAndPassword(m.email, password);
+    await sAuth.signInWithEmailAndPassword(m.loginEmail || m.email, password);
     await sAuth.currentUser.delete();
     await sAuth.signOut();
   }catch(e){ console.error(e); toast("Le compte de connexion n'a pas pu être supprimé (peut-être déjà absent) — la fiche est retirée quand même.",true); }
