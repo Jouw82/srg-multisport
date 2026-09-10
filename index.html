@@ -37,10 +37,11 @@
 [data-theme="dark"] .topbar{background:#0E1013}
 [data-theme="dark"] .edit{background:var(--sea-soft)}
 [data-theme="dark"] .lede.editable{background:var(--sea-soft)}
-[data-theme="dark"] .eyebrow{color:var(--highlight)}
-[data-theme="dark"] h1{color:var(--highlight)}
-[data-theme="dark"] .btn.suggestBtn{border-color:var(--highlight); color:var(--highlight)}
+[data-theme="dark"] .eyebrow{color:#dfab2d}
+[data-theme="dark"] h1{color:#dfab2d}
+[data-theme="dark"] .btn.suggestBtn{border-color:#dfab2d; color:#dfab2d}
 [data-theme="dark"] .ticket{background:rgba(255,122,71,.10)}
+[data-theme="dark"] .note{color:#dfab2d}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0; background:var(--paper); color:var(--ink);
@@ -53,18 +54,18 @@ a{color:var(--sea)}
 .topbar-wrap{max-width:1040px; margin:0 auto; padding:7px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; min-height:40px}
 .tb-brand{font-family:"Archivo"; font-weight:800; font-size:12.5px; letter-spacing:.03em; display:flex; align-items:center; gap:7px; flex:0 0 auto}
 .tb-brand .b{background:var(--flame); padding:3px 7px; border-radius:5px; font-size:10.5px}
-.tb-brand span{font-weight:600; color:rgba(255,255,255,.65); font-size:12px}
+.tb-brand span{font-weight:600; color:#dfab2d; font-size:12px}
 .tb-links{display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; flex:1 1 auto}
 .tb-link{display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:#fff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.22); border-radius:999px; padding:4px 10px 4px 8px; text-decoration:none; cursor:pointer; font-family:inherit}
 .tb-link:hover{background:rgba(255,255,255,.17)}
 .tb-link svg{width:12px; height:12px; flex:none}
 .tb-link.empty{border-style:dashed; opacity:.7}
-.modeBtn{font:inherit; font-size:12px; font-weight:600; height:32px; padding:0 14px; box-sizing:border-box; border-radius:999px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:background .12s}
-.modeBtn:hover{background:rgba(255,255,255,.16)}
+.modeBtn{font:inherit; font-size:12px; font-weight:600; height:32px; padding:0 14px; box-sizing:border-box; border-radius:9px; border:0; background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:background .12s}
+.modeBtn:hover{background:rgba(255,255,255,.22)}
 .modeBtn .dotw{width:6px; height:6px; border-radius:50%; background:#93A0A8}
 .modeBtn.on{background:#1E9E52; border-color:#1E9E52; color:#fff}
-.themeBtn{font-size:15px; width:32px; height:32px; box-sizing:border-box; border-radius:999px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; line-height:1; flex:none; transition:background .12s}
-.themeBtn:hover{background:rgba(255,255,255,.17)}
+.themeBtn{font-size:15px; width:32px; height:32px; box-sizing:border-box; border-radius:9px; border:0; background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; line-height:1; flex:none; transition:background .12s}
+.themeBtn:hover{background:rgba(255,255,255,.22)}
 .modeBtn.on .dotw{background:#fff}
 #editToggleBtn{display:none}
 
@@ -123,15 +124,15 @@ tr.mrow:first-child td{border-top:0}
 .act-name{font-weight:600}
 .act-name.dash{color:var(--ink-faint); font-weight:500}
 .free{color:var(--ink-faint); font-style:italic; font-weight:500}
-.note{color:var(--ink-soft); font-size:14px}
+.note{color:var(--flame); font-size:14px}
 .aperoBadge{display:inline-block; font-size:11px; font-weight:700; color:#fff; background:var(--flame); border-radius:6px; padding:2px 7px; margin-right:7px; letter-spacing:.02em}
 .todayTag{display:inline-block; font-size:10.5px; font-weight:700; color:#fff; background:var(--highlight); padding:2px 7px; border-radius:6px; margin-left:8px; vertical-align:middle}
-tr.s-ok{box-shadow:inset 3px 0 0 var(--sea)}
-tr.s-tournoi{box-shadow:inset 3px 0 0 var(--gold); background:var(--gold-soft)}
-tr.s-vacances{background:var(--vac); color:var(--vac-ink); box-shadow:inset 3px 0 0 var(--line-strong)}
+tr.s-ok{box-shadow:inset 4px 0 0 var(--sea)}
+tr.s-tournoi{box-shadow:inset 4px 0 0 var(--gold); background:var(--gold-soft)}
+tr.s-vacances{background:var(--vac); color:var(--vac-ink); box-shadow:inset 4px 0 0 var(--line-strong); font-style:italic}
 tr.s-vacances .dcell .dnum{color:var(--vac-ink)}
-tr.today{background:var(--highlight-soft) !important; box-shadow:inset 3px 0 0 var(--highlight)}
-tbody tr.past{background:var(--vac); box-shadow:inset 3px 0 0 var(--line-strong)}
+tr.today{background:var(--highlight-soft) !important; box-shadow:inset 4px 0 0 var(--highlight)}
+tbody tr.past{background:var(--vac); box-shadow:inset 4px 0 0 var(--line-strong)}
 tbody tr.past td{font-style:italic; color:var(--ink-faint)}
 tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7}
 .vacLabel{font-weight:600}
@@ -149,8 +150,8 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 /* ---------- RÉPERTOIRE ---------- */
 .repertoire{margin:48px 0 10px; padding-top:30px; border-top:1px solid var(--line)}
 
-.profileBtn{font-size:12px; height:32px; padding:0 14px; box-sizing:border-box; border-radius:999px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:7px; font:inherit; font-weight:600}
-.profileBtn:hover{background:rgba(255,255,255,.17)}
+.profileBtn{font-size:12px; height:32px; padding:0 14px; box-sizing:border-box; border-radius:9px; border:0; background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:7px; font:inherit; font-weight:600}
+.profileBtn:hover{background:rgba(255,255,255,.22)}
 .profileBtn.on{background:#1E9E52; border-color:#1E9E52}
 .role-select{width:100%; font:inherit; font-size:15px; padding:10px 12px; border:1px solid var(--line-strong); border-radius:10px; background:var(--paper); color:var(--ink)}
 .pw-reveal{margin-top:14px; padding:12px 14px; border-radius:10px; background:var(--gold-soft); border:1px solid var(--gold); font-size:13.5px}
@@ -183,6 +184,10 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 .profileDropdown.open{display:block}
 .profileDropdown .field{margin-top:12px}
 .profileDropdown .field:first-child{margin-top:0}
+.profileDropdown .field label{color:var(--flame); font-weight:700}
+[data-theme="dark"] .profileDropdown .field label{color:#dfab2d}
+.profileDropdown input{padding:7px 9px; border-radius:6px; font-size:14px}
+.name-opt{padding:8px 10px; font-size:13.5px}
 .two-col{display:grid; grid-template-columns:1fr 1fr; gap:12px}
 @media(max-width:480px){.two-col{grid-template-columns:1fr}}
 
@@ -263,6 +268,7 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 .err{color:#C0341A; font-size:13.5px; margin-top:10px; min-height:18px}
 .editBtn{margin-top:16px}
 .only-admin{display:none} body.admin .only-admin{display:inline-flex}
+.adminRoleOnly{display:none} body.role-admin .adminRoleOnly{display:inline-flex}
 .admin-block{display:none} body.admin .admin-block{display:block}
 
 /* ---------- TOAST ---------- */
@@ -278,7 +284,7 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
   thead{display:none}
   table,tbody,tr,td{display:block; width:100%}
   table{border:0; background:transparent}
-  tbody tr:not(.mrow){background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:10px; padding:6px 2px; box-shadow:inset 3px 0 0 transparent}
+  tbody tr:not(.mrow){background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:10px; padding:6px 2px; box-shadow:inset 4px 0 0 transparent}
   tbody td{border:0 !important; padding:7px 14px}
   td[data-l]:not(.dcell)::before{content:attr(data-l); display:block; font-size:11px; color:var(--ink-faint); font-weight:600; margin-bottom:1px}
   .dcell{width:auto}
@@ -325,7 +331,7 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
   </header>
 
   <div class="membersRow">
-    <button type="button" class="btn only-admin" id="membersBtn">Gestion des membres</button>
+    <button type="button" class="btn adminRoleOnly" id="membersBtn">Gestion des membres</button>
   </div>
   <div class="cal-head">
     <div class="ch-left">
@@ -365,6 +371,7 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
 
   <footer>
     <p>Les données sont synchronisées en direct avec la base du club. SRG Multisports — saison 2026‑2027.</p>
+    <p>Pour vos suggestions d'ajout sur le site, n'hésitez pas à nous en parler !</p>
   </footer>
 </div>
 
@@ -549,6 +556,7 @@ function closeProfileDropdown(){ document.getElementById("profileDropdown").clas
 function openProfileBtn(){
   const dd=document.getElementById("profileDropdown");
   if(dd.classList.contains("open")){ closeProfileDropdown(); return; }
+  PENDING_AFTER_LOGIN=null; // un clic direct sur "Se connecter" n'est jamais lié à une action en attente
   dd.classList.add("open");
   if(CURRENT_MEMBRE) renderProfileDropdown(); else renderLoginDropdown();
 }
@@ -558,8 +566,24 @@ document.addEventListener("click",(e)=>{
 });
 document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeProfileDropdown(); });
 
-async function renderLoginDropdown(){
+function getRememberedProfile(){
+  try{ const v=localStorage.getItem("srg_last_login"); return v?JSON.parse(v):null; }catch(e){ return null; }
+}
+function rememberProfile(m){
+  try{ localStorage.setItem("srg_last_login", JSON.stringify({uid:m.uid,nom:m.nom,prenom:m.prenom,email:m.email})); }catch(e){}
+}
+function showPasswordStep(dd, m){
+  dd.innerHTML = `<p class="resume" style="font-size:13.5px;color:var(--ink-soft);margin:0 0 10px">${esc(m.prenom)} ${esc(m.nom)} <button type="button" id="notMeBtn" style="font:inherit;font-size:12px;color:var(--sea);background:none;border:0;cursor:pointer;text-decoration:underline;padding:0;margin-left:6px">Ce n'est pas moi</button></p>
+    <div class="field"><label>Mot de passe</label><input id="login-pw" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')__doLogin('${esc(m.uid).replace(/'/g,"\\'")}','${esc(m.email).replace(/'/g,"\\'")}')"></div>
+    <div class="err" id="loginErr"></div>
+    <div class="mactions"><button class="btn primary" onclick="__doLogin('${esc(m.uid).replace(/'/g,"\\'")}','${esc(m.email).replace(/'/g,"\\'")}')">Se connecter</button></div>`;
+  document.getElementById("notMeBtn").onclick=()=>renderLoginDropdown(true);
+  document.getElementById("login-pw").focus();
+}
+async function renderLoginDropdown(forceList){
   const dd=document.getElementById("profileDropdown");
+  const remembered = !forceList ? getRememberedProfile() : null;
+  if(remembered){ showPasswordStep(dd, remembered); return; }
   dd.innerHTML = `<p class="resume" style="font-size:13.5px;color:var(--ink-soft);margin:0 0 10px">Chargement…</p>`;
   const list = await loadPublicIndex();
   if(!dd.classList.contains("open")) return; // fermé entre-temps
@@ -569,7 +593,7 @@ async function renderLoginDropdown(){
   }
   const opts = list.slice().sort((a,b)=>(a.nom||"").localeCompare(b.nom||"","fr"))
     .map(m=>`<button type="button" class="name-opt" data-uid="${esc(m.uid)}">${esc(m.prenom)} ${esc(m.nom)}</button>`).join("");
-  dd.innerHTML = `<p class="resume" style="font-size:13.5px;color:var(--ink-soft);margin:0 0 10px">Choisissez votre nom.</p>
+  dd.innerHTML = `<div class="field" style="margin-top:0"><label>Nom</label></div>
     <div class="name-pick" id="namePick">${opts}</div>
     <div id="pwStep"></div>`;
   document.querySelectorAll("#namePick .name-opt").forEach(b=>b.onclick=()=>{
@@ -590,6 +614,7 @@ window.__doLogin=async function(uid,email){
     await firebase.auth().signInWithEmailAndPassword(email, pw);
     CURRENT_USER = firebase.auth().currentUser;
     await refreshCurrentMembre();
+    if(CURRENT_MEMBRE) rememberProfile(CURRENT_MEMBRE);
     err.textContent="";
     closeProfileDropdown();
     toast("Connecté.");
@@ -985,6 +1010,7 @@ function applyAdminState(){
   if(!IS_ADMIN_ROLE) EDIT_MODE=false; // jamais de vue édition sans le rôle, même en cas de perte de droits en cours de session
   ADMIN = IS_ADMIN_ROLE && EDIT_MODE;
   document.body.classList.toggle("admin", ADMIN);
+  document.body.classList.toggle("role-admin", IS_ADMIN_ROLE);
   setLedeEditable(ADMIN);
   updateEditToggleBtn();
   renderCal(); renderChips(); renderLinks();
