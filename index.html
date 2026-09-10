@@ -140,6 +140,8 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 .editWrap{position:relative; display:block; width:100%}
 .edit{width:100%; font:inherit; font-size:15px; padding:6px 26px 6px 9px; border:1.5px dashed var(--sea); border-radius:8px; background:var(--sea-soft); color:var(--ink); transition:background .12s, border-color .12s}
 .edit::placeholder{color:var(--ink-faint); font-style:italic}
+.noteEdit:empty::before{content:attr(data-ph); color:var(--ink-faint); font-style:italic}
+.noteEdit{display:block; min-height:22px; overflow-wrap:anywhere}
 .edit:hover{background:var(--card)}
 .edit:focus{outline:none; border-style:solid; background:var(--card); box-shadow:0 0 0 3px var(--sea-soft)}
 .editWrap .pencil{position:absolute; right:8px; top:50%; transform:translateY(-50%); font-size:11px; color:var(--sea); opacity:.6; pointer-events:none}
@@ -152,12 +154,19 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 
 .dash-grid{display:grid; grid-template-columns:2fr 1fr; gap:16px; margin:26px 0}
 .dash-card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; box-shadow:var(--shadow)}
-.dash-card h3{font-family:"Archivo"; font-weight:700; font-size:13.5px; margin:0 0 10px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; display:flex; align-items:center; gap:8px}
+.dash-card h3{font-family:"Archivo"; font-weight:700; font-size:13.5px; margin:0 0 10px; color:var(--highlight); text-transform:uppercase; letter-spacing:.03em; display:flex; align-items:center; gap:8px}
 .dash-card-sm{padding:14px 16px}
 .dash-card-sm h3{font-size:12px; margin-bottom:8px}
 .bday-item{padding:6px 0; font-size:13px; color:var(--ink)}
+.bday-name{font-weight:700; color:var(--flame)}
+.bday-age{font-weight:700}
 .memo-text{font-size:14px; color:var(--ink); white-space:pre-wrap; line-height:1.5; min-height:20px}
 .memo-text:empty::before{content:"Aucune actualité pour l'instant."; color:var(--ink-faint); font-style:italic}
+.link-menu{position:fixed; z-index:200; background:var(--card); border:1px solid var(--line-strong); border-radius:10px; box-shadow:0 12px 30px -10px rgba(0,0,0,.4); padding:7px; display:flex; gap:6px; align-items:center}
+.link-menu input{font:inherit; font-size:13px; padding:6px 8px; border:1px solid var(--line-strong); border-radius:6px; background:var(--paper); color:var(--ink); width:180px}
+.link-menu button{font:inherit; font-size:12.5px; font-weight:600; padding:6px 10px; border-radius:6px; border:1px solid var(--sea); background:var(--sea-soft); color:var(--sea); cursor:pointer; white-space:nowrap}
+.link-menu button:hover{background:var(--sea); color:#fff}
+.note a, .memo-text a{color:inherit; text-decoration:underline}
 .memo-text.editable{cursor:text; border:1.5px dashed var(--sea); border-radius:8px; padding:7px 32px 7px 10px; margin:-7px -10px; position:relative; background:var(--sea-soft)}
 .memo-text.editable::after{content:"✎"; position:absolute; right:11px; top:11px; font-size:12px; color:var(--sea); opacity:.65}
 .memo-text.editable:hover{background:var(--card)}
@@ -436,6 +445,68 @@ const d2=iso=>{const[y,m,d]=iso.split("-").map(Number);return new Date(y,m-1,d);
 const T=(()=>{const t=new Date();return new Date(t.getFullYear(),t.getMonth(),t.getDate());})();
 const REAL=v=>v&&v!=="-"&&v!=="Vacances";
 const esc=x=>(x||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+function sanitizeRichText(html){
+  const div=document.createElement("div");
+  div.innerHTML=html||"";
+  function walk(node){
+    let out="";
+    node.childNodes.forEach(n=>{
+      if(n.nodeType===3){ out+=esc(n.textContent); }
+      else if(n.nodeType===1){
+        if(n.tagName==="A" && n.getAttribute("href")){
+          const href=n.getAttribute("href");
+          if(/^https?:\/\//i.test(href)) out+=`<a href="${esc(href)}" target="_blank" rel="noopener">${walk(n)}</a>`;
+          else out+=walk(n);
+        } else if(n.tagName==="BR"){ out+="<br>"; }
+        else if(n.tagName==="DIV"||n.tagName==="P"){ out+=walk(n)+"<br>"; }
+        else { out+=walk(n); }
+      }
+    });
+    return out;
+  }
+  return walk(div);
+}
+
+/* ---------- Menu contextuel "Créer un lien" (clic droit sur une sélection) ---------- */
+function closeLinkMenu(){ const m=document.getElementById("linkMenu"); if(m) m.remove(); }
+function showLinkMenu(x,y,actions){
+  closeLinkMenu();
+  const menu=document.createElement("div");
+  menu.id="linkMenu"; menu.className="link-menu";
+  menu.style.left=Math.min(x, window.innerWidth-230)+"px";
+  menu.style.top=Math.min(y, window.innerHeight-50)+"px";
+  menu.innerHTML = actions.map((a,i)=>`<button type="button" data-i="${i}">${esc(a.label)}</button>`).join("");
+  document.body.appendChild(menu);
+  menu.querySelectorAll("button").forEach((b,i)=>b.onclick=(ev)=>{ ev.stopPropagation(); actions[i].action(); closeLinkMenu(); });
+}
+document.addEventListener("click",(e)=>{ const m=document.getElementById("linkMenu"); if(m && !m.contains(e.target)) closeLinkMenu(); });
+function createLinkMenu(el, onApply){
+  el.addEventListener("contextmenu",(e)=>{
+    const sel=window.getSelection();
+    if(!sel || sel.rangeCount===0) return;
+    const range=sel.getRangeAt(0);
+    if(!el.contains(range.commonAncestorContainer)) return;
+    let node=sel.anchorNode, linkNode=null;
+    while(node && node!==el){ if(node.nodeType===1 && node.tagName==="A"){ linkNode=node; break; } node=node.parentNode; }
+    if(linkNode){
+      e.preventDefault();
+      showLinkMenu(e.clientX, e.clientY, [{label:"Retirer le lien", action:()=>{
+        linkNode.replaceWith(document.createTextNode(linkNode.textContent));
+        onApply(sanitizeRichText(el.innerHTML));
+      }}]);
+      return;
+    }
+    if(sel.isCollapsed) return;
+    e.preventDefault();
+    // window.prompt() est une boîte de dialogue du navigateur, pas un élément de la page :
+    // elle ne vole donc jamais le focus ni n'invalide la sélection de texte en cours.
+    const url = window.prompt("Lien à associer au texte sélectionné :", "https://");
+    if(!url) return;
+    let href=url.trim(); if(!/^https?:\/\//i.test(href)) href="https://"+href;
+    document.execCommand("createLink", false, href);
+    onApply(sanitizeRichText(el.innerHTML));
+  });
+}
 
 DATA.calendrier.forEach(c=>{ c.vac=(c.state==="vacances"); });
 
@@ -490,13 +561,17 @@ function readCell(c,f){
     if(c.princ===""||c.princ==="-")return `<span class="free">-</span>`;
     return `<span class="act-name">${esc(c.princ)}</span>`; }
   if(f==="sec"){ if(c.state==="vacances")return ""; return REAL(c.sec)?`<span class="act-name">${esc(c.sec)}</span>`:`<span class="act-name dash">—</span>`; }
-  if(f==="note"){ if(!c.note)return ""; return (/Apéro/i.test(c.note)?`<span class="aperoBadge">Apéro</span>`:"")+`<span class="note">${esc(c.note)}</span>`; }
+  if(f==="note"){ if(!c.note)return ""; return (/Apéro/i.test(c.note)?`<span class="aperoBadge">Apéro</span>`:"")+`<span class="note">${sanitizeRichText(c.note)}</span>`; }
 }
 function editCell(c,f){
-  const ph=f==="princ"?"Activité…":f==="sec"?"—":"Note…";
-  let val=(f==="princ"?c.princ:f==="sec"?c.sec:c.note)||"";
+  if(f==="note"){
+    const val=c.note||"";
+    return `<span class="editWrap"><div class="edit noteEdit" contenteditable="true" data-f="note" data-ph="Note…">${sanitizeRichText(val)}</div><span class="pencil">✎</span></span>`;
+  }
+  const ph=f==="princ"?"Activité…":"—";
+  let val=(f==="princ"?c.princ:c.sec)||"";
   if(val==="-")val="";
-  const list=(f==="princ"||f==="sec")?` list="sportsList"`:"";
+  const list=` list="sportsList"`;
   return `<span class="editWrap"><input class="edit" data-f="${f}" placeholder="${ph}" value="${esc(val)}"${list}><span class="pencil">✎</span></span>`;
 }
 function renderCal(){
@@ -519,10 +594,15 @@ function renderCal(){
   body.innerHTML = html || `<tr><td colspan="4" style="padding:22px 16px;color:var(--ink-faint);font-style:italic">Aucune séance à venir — la saison est terminée.</td></tr>`;
   if(ADMIN){
     body.querySelectorAll(".edit").forEach(el=>{
-      el.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); el.blur(); } });
+      const isRich = el.classList.contains("noteEdit");
+      if(!isRich){
+        el.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); el.blur(); } });
+      } else {
+        createLinkMenu(el, (newHtml)=>{ el.innerHTML=newHtml; el.blur(); });
+      }
       el.addEventListener("blur",()=>{
         const tr=el.closest("tr"), idx=+tr.dataset.idx, c=DATA.calendrier[idx], f=el.dataset.f;
-        const v=el.value.trim();
+        const v = isRich ? sanitizeRichText(el.innerHTML) : el.value.trim();
         if(f==="princ")c.princ=v; else if(f==="sec")c.sec=v; else c.note=v;
         recompute(c); renderCal(); renderTicket(); renderChips(); saveCalendrier();
         if(f==="princ"||f==="sec") maybeSuggestAdd(idx,f,v);
@@ -954,15 +1034,15 @@ function renderBirthdays(list){
   box.innerHTML=withNext.map(({m,next})=>{
     const initiale=(m.nom||"").trim().charAt(0).toUpperCase();
     const age = m.annee ? (next.getFullYear()-m.annee) : null;
-    const ageTxt = age!=null ? `${age} ans ` : "";
-    return `<div class="bday-item"><span>${esc(m.prenom)} ${esc(initiale)}${initiale?".":""} — ${ageTxt}le ${next.getDate()} ${MO[next.getMonth()]}</span></div>`;
+    const ageTxt = age!=null ? `<span class="bday-age">${age} ans</span> ` : "";
+    return `<div class="bday-item"><span class="bday-name">${esc(m.prenom)} ${esc(initiale)}${initiale?".":""}</span> — ${ageTxt}le ${next.getDate()} ${MO[next.getMonth()]}</div>`;
   }).join("");
 }
 
 /* ---------- Actualités (texte libre, éditable par les admins) ---------- */
 function renderMemo(){
   const el=document.getElementById("memoText"); if(!el) return;
-  el.textContent = DATA.memo||"";
+  el.innerHTML = sanitizeRichText(DATA.memo||"");
 }
 function setMemoEditable(on){
   const el=document.getElementById("memoText"); if(!el) return;
@@ -1120,6 +1200,7 @@ function applyAdminState(){
   document.body.classList.toggle("role-admin", IS_ADMIN_ROLE);
   setLedeEditable(ADMIN);
   setMemoEditable(ADMIN);
+  renderMemo();
   updateEditToggleBtn();
   renderCal(); renderChips(); renderLinks();
   if(DATA.poll) renderResults();
@@ -1149,8 +1230,11 @@ lede.addEventListener("blur",()=>{
 const memoText=document.getElementById("memoText");
 memoText.addEventListener("blur",()=>{
   if(!ADMIN)return;
-  const v=memoText.textContent.trim();
-  if(v!==(DATA.memo||"")){ DATA.memo=v; saveMemo(v); }
+  const v=sanitizeRichText(memoText.innerHTML);
+  if(v!==(DATA.memo||"")){ memoText.innerHTML=v; DATA.memo=v; saveMemo(v); }
+});
+createLinkMenu(memoText, (newHtml)=>{
+  memoText.innerHTML=newHtml; DATA.memo=newHtml; saveMemo(newHtml);
 });
 
 /* ---------- Vue Saison complète / À venir ---------- */
