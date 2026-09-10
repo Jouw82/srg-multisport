@@ -508,8 +508,7 @@ async function loadPublicIndex(){
   }catch(e){ console.error(e); return []; }
 }
 async function savePublicIndex(list){
-  try{ await db.collection("public_index").doc("members").set({list}); }
-  catch(e){ console.error(e); toast("Échec de la mise à jour de l'index des noms.",true); }
+  await db.collection("public_index").doc("members").set({list});
 }
 
 function isAdminRole(){ return CURRENT_MEMBRE && (CURRENT_MEMBRE.role==="admin"||CURRENT_MEMBRE.role==="chefadmin"); }
@@ -519,7 +518,7 @@ function updateProfileBtn(){
     b.innerHTML = `👤 ${esc(CURRENT_MEMBRE.prenom)}`;
     b.classList.add("on");
   } else {
-    b.innerHTML = `👤 Profil`;
+    b.innerHTML = `👤 Se connecter`;
     b.classList.remove("on");
   }
 }
@@ -657,10 +656,18 @@ async function openMembersPanel(){
   MBR_EDIT_ID=null;
   openModal(`<div class="mhead"><h3>Gestion des membres</h3><button class="x" onclick="__close()" aria-label="Fermer">✕</button></div>
     ${memberFormHtml()}
-    <div class="mbr-list" id="mbrList"><p class="mbr-empty">Chargement…</p></div>`);
+    <div class="mbr-list" id="mbrList"><p class="mbr-empty">Chargement…</p></div>
+    <p class="hint"><button type="button" class="btn" style="font-size:12px;padding:6px 11px" onclick="__resyncIndex()">Resynchroniser l'index des noms</button></p>`);
   await loadMembresList();
   renderMembersList();
 }
+window.__resyncIndex=async function(){
+  try{
+    const idx = MBR_LIST.map(m=>({uid:m.id, nom:m.nom, prenom:m.prenom, email:m.email}));
+    await savePublicIndex(idx);
+    toast("Index des noms resynchronisé ("+idx.length+" membre"+(idx.length>1?"s":"")+").");
+  }catch(e){ console.error(e); toast("Échec de la resynchronisation.",true); }
+};
 function renderMembersList(){
   const box=document.getElementById("mbrList"); if(!box) return;
   if(!MBR_LIST.length){ box.innerHTML=`<p class="mbr-empty">Aucun membre enregistré pour l'instant.</p>`; return; }
@@ -738,11 +745,12 @@ window.__saveMember=async function(){
   const password = genPassword(nom, naissance);
   const saveBtn=document.getElementById("mbrSaveBtn");
   saveBtn.disabled=true; saveBtn.textContent="Création du compte…";
-  let cred=null, sAuth=null;
+  let cred=null, sAuth=null, createdUid=null;
   try{
     sAuth = getSecondaryAuth();
     cred = await sAuth.createUserWithEmailAndPassword(email, password);
     const uid = cred.user.uid;
+    createdUid = uid;
     const membre={nom,prenom,naissance,email,tel,multisports:multi,handloisir:hand,role};
     await db.collection("membres").doc(uid).set(membre);
     const idx = await loadPublicIndex();
@@ -758,10 +766,13 @@ window.__saveMember=async function(){
   }catch(e){
     console.error(e);
     if(cred){
-      // La création du compte de connexion a réussi mais une étape suivante a échoué :
-      // on annule le compte fraîchement créé pour ne jamais laisser de "compte fantôme".
-      try{ await cred.user.delete(); }catch(e2){ console.error("rollback échoué",e2); }
+      // La création du compte (et éventuellement la fiche Firestore) a partiellement réussi
+      // avant l'échec : on annule tout pour ne jamais laisser de donnée orpheline.
+      try{ await cred.user.delete(); }catch(e2){ console.error("rollback compte échoué",e2); }
       try{ if(sAuth) await sAuth.signOut(); }catch(e3){}
+      if(createdUid){
+        try{ await db.collection("membres").doc(createdUid).delete(); }catch(e4){ console.error("rollback fiche échoué",e4); }
+      }
     }
     errBox.textContent = (e && e.code==="auth/email-already-in-use")
       ? "Cet email a déjà un compte."
