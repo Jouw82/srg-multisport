@@ -53,17 +53,17 @@ a{color:var(--sea)}
 .topbar-wrap{max-width:1040px; margin:0 auto; padding:7px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; min-height:40px}
 .tb-brand{font-family:"Archivo"; font-weight:800; font-size:12.5px; letter-spacing:.03em; display:flex; align-items:center; gap:7px; flex:0 0 auto}
 .tb-brand .b{background:var(--flame); padding:3px 7px; border-radius:5px; font-size:10.5px}
-.tb-brand span{font-weight:600; color:rgba(255,255,255,.65); font-size:11.5px}
+.tb-brand span{font-weight:600; color:rgba(255,255,255,.65); font-size:12px}
 .tb-links{display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; flex:1 1 auto}
-.tb-link{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:#fff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.22); border-radius:999px; padding:4px 10px 4px 8px; text-decoration:none; cursor:pointer; font-family:inherit}
+.tb-link{display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:#fff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.22); border-radius:999px; padding:4px 10px 4px 8px; text-decoration:none; cursor:pointer; font-family:inherit}
 .tb-link:hover{background:rgba(255,255,255,.17)}
 .tb-link svg{width:12px; height:12px; flex:none}
 .tb-link.empty{border-style:dashed; opacity:.7}
-.modeBtn{font:inherit; font-size:12px; font-weight:600; padding:6px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:background .12s}
+.modeBtn{font:inherit; font-size:12px; font-weight:600; height:32px; padding:0 14px; box-sizing:border-box; border-radius:999px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:background .12s}
 .modeBtn:hover{background:rgba(255,255,255,.16)}
 .modeBtn .dotw{width:6px; height:6px; border-radius:50%; background:#93A0A8}
 .modeBtn.on{background:#1E9E52; border-color:#1E9E52; color:#fff}
-.themeBtn{font-size:15px; width:32px; height:32px; border-radius:999px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; line-height:1; transition:background .12s}
+.themeBtn{font-size:15px; width:32px; height:32px; box-sizing:border-box; border-radius:999px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; line-height:1; flex:none; transition:background .12s}
 .themeBtn:hover{background:rgba(255,255,255,.17)}
 .modeBtn.on .dotw{background:#fff}
 
@@ -148,7 +148,7 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 /* ---------- RÉPERTOIRE ---------- */
 .repertoire{margin:48px 0 10px; padding-top:30px; border-top:1px solid var(--line)}
 
-.profileBtn{font-size:12px; padding:6px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:7px; font:inherit; font-weight:600}
+.profileBtn{font-size:12px; height:32px; padding:0 14px; box-sizing:border-box; border-radius:999px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:7px; font:inherit; font-weight:600}
 .profileBtn:hover{background:rgba(255,255,255,.17)}
 .profileBtn.on{background:#1E9E52; border-color:#1E9E52}
 .role-select{width:100%; font:inherit; font-size:15px; padding:10px 12px; border:1px solid var(--line-strong); border-radius:10px; background:var(--paper); color:var(--ink)}
@@ -298,7 +298,6 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
     <div class="tb-right" style="display:flex;align-items:center;gap:8px;flex:0 0 auto">
       <button class="themeBtn" id="themeBtn" aria-label="Changer de thème" title="Changer de thème">🌙</button>
       <button class="profileBtn" id="profileBtn">👤 Profil</button>
-      <button class="modeBtn" id="modeBtn"><span class="dotw"></span>Mode lecture</button>
     </div>
   </div>
 </div>
@@ -382,7 +381,7 @@ const docRef = db.collection('planning').doc('main');
 
 /* ---------- Données ---------- */
 const DATA = {"calendrier": [{"date_iso": "2026-09-08", "date_label": "8 septembre", "weekday": "Tuesday", "princ": "Hand Fit", "sec": "Futsal", "note": "Avec Ludovic et Emile du Club", "state": "ok"}, {"date_iso": "2026-09-15", "date_label": "15 septembre", "weekday": "Tuesday", "princ": "Hand Fit", "sec": "Futsal", "note": "Avec Ludovic et Emile du Club", "state": "ok"}, {"date_iso": "2026-09-22", "date_label": "22 septembre", "weekday": "Tuesday", "princ": "Handball", "sec": "-", "note": "Avec Ludovic et Emile du Club", "state": "ok"}, {"date_iso": "2026-09-29", "date_label": "29 septembre", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2026-10-06", "date_label": "6 octobre", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2026-10-13", "date_label": "13 octobre", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "Apéro Vacances Toussaint", "state": "tbd"}, {"date_iso": "2026-10-20", "date_label": "20 octobre", "weekday": "Tuesday", "princ": "Vacances", "sec": "", "note": "", "state": "vacances"}, {"date_iso": "2026-10-27", "date_label": "27 octobre", "weekday": "Tuesday", "princ": "", "sec": "", "note": "", "state": "vacances"}, {"date_iso": "2026-11-03", "date_label": "3 novembre", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2026-11-10", "date_label": "10 novembre", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2026-11-17", "date_label": "17 novembre", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2026-11-24", "date_label": "24 novembre", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2026-12-01", "date_label": "1 décembre", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2026-12-08", "date_label": "8 décembre", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2026-12-15", "date_label": "15 décembre", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "Apéro Vacances Noël (Raclette)", "state": "tbd"}, {"date_iso": "2026-12-22", "date_label": "22 décembre", "weekday": "Tuesday", "princ": "Vacances", "sec": "", "note": "", "state": "vacances"}, {"date_iso": "2026-12-29", "date_label": "29 décembre", "weekday": "Tuesday", "princ": "", "sec": "", "note": "", "state": "vacances"}, {"date_iso": "2027-01-05", "date_label": "5 janvier", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-01-12", "date_label": "12 janvier", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-01-19", "date_label": "19 janvier", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-01-26", "date_label": "26 janvier", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-02-02", "date_label": "2 février", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-02-09", "date_label": "9 février", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-02-16", "date_label": "16 février", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "Apéro Vacances d'Hiver (Crêpes)", "state": "tbd"}, {"date_iso": "2027-02-23", "date_label": "23 février", "weekday": "Tuesday", "princ": "Vacances", "sec": "", "note": "", "state": "vacances"}, {"date_iso": "2027-03-02", "date_label": "2 mars", "weekday": "Tuesday", "princ": "", "sec": "", "note": "", "state": "vacances"}, {"date_iso": "2027-03-09", "date_label": "9 mars", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-03-16", "date_label": "16 mars", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-03-23", "date_label": "23 mars", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-03-30", "date_label": "30 mars", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-04-06", "date_label": "6 avril", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-04-13", "date_label": "13 avril", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "Apéro Vacances Pâques", "state": "tbd"}, {"date_iso": "2027-04-20", "date_label": "20 avril", "weekday": "Tuesday", "princ": "Vacances", "sec": "", "note": "", "state": "vacances"}, {"date_iso": "2027-04-27", "date_label": "27 avril", "weekday": "Tuesday", "princ": "", "sec": "", "note": "", "state": "vacances"}, {"date_iso": "2027-05-04", "date_label": "4 mai", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-05-11", "date_label": "11 mai", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-05-18", "date_label": "18 mai", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-05-25", "date_label": "25 mai", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-06-01", "date_label": "1 juin", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "", "state": "tbd"}, {"date_iso": "2027-06-08", "date_label": "8 juin", "weekday": "Tuesday", "princ": "Tournoi fin d'année", "sec": "-", "note": "", "state": "tournoi"}, {"date_iso": "2027-06-15", "date_label": "15 juin", "weekday": "Tuesday", "princ": "Tournoi fin d'année", "sec": "-", "note": "", "state": "tournoi"}, {"date_iso": "2027-06-22", "date_label": "22 juin", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "Apéro Vacances d'été (barbecue)", "state": "tbd"}, {"date_iso": "2027-06-29", "date_label": "29 juin", "weekday": "Tuesday", "princ": "-", "sec": "-", "note": "Session Loisir en extérieur", "state": "tbd"}], "sports": [{"nom": "Futsal", "lieu": "Kerzouar", "info": "", "tel": ""}, {"nom": "Handball", "lieu": "Kerzouar", "info": "", "tel": ""}, {"nom": "Hand Fit", "lieu": "Kerzouar", "info": "", "tel": ""}, {"nom": "Rugby Flag", "lieu": "Kerzouar", "info": "", "tel": ""}, {"nom": "Ultimate", "lieu": "Kerzouar", "info": "", "tel": ""}, {"nom": "Badminton", "lieu": "Kerzouar", "info": "", "tel": ""}, {"nom": "Volley Ball", "lieu": "Kerzouar", "info": "", "tel": ""}, {"nom": "Basket Ball", "lieu": "Kerzouar", "info": "", "tel": ""}, {"nom": "Foot gaelique", "lieu": "Kerzouar", "info": "", "tel": ""}, {"nom": "Tèque", "lieu": "Kerzouar", "info": "", "tel": ""}, {"nom": "Kin-ball", "lieu": "Kerzouar", "info": "", "tel": ""}, {"nom": "Biathlon", "lieu": "Kerzouar", "info": "", "tel": ""}, {"nom": "Dodge Ball", "lieu": "Kerzouar", "info": "", "tel": ""}, {"nom": "Pétanque", "lieu": "Boulodrome St-Renan", "info": "", "tel": ""}, {"nom": "Beach Volley", "lieu": "Extérieur", "info": "", "tel": ""}, {"nom": "Judo", "lieu": "Club de Judo", "info": "", "tel": ""}, {"nom": "Escalade", "lieu": "Club d'escalade", "info": "", "tel": ""}, {"nom": "Athlétisme", "lieu": "Kerzouar", "info": "", "tel": ""}, {"nom": "Tournoi fin d'année", "lieu": "", "info": "", "tel": ""}, {"nom": "Kabaddi", "lieu": "", "info": "https://www.youtube.com/watch?v=KRxjyf8bOFo", "tel": ""}, {"nom": "Parkour", "lieu": "Association Parkour Brest", "info": "contact.parkourbrest@gmail.com", "tel": "07 68 20 84 06"}, {"nom": "Tir à L'arc", "lieu": "", "info": "", "tel": ""}, {"nom": "Disc Golf", "lieu": "", "info": "", "tel": ""}], "info": {"Futsal": {"resume": "Football en salle à cinq contre cinq, sur un terrain réduit avec un ballon à rebond maîtrisé. Jeu rapide qui privilégie la technique et les appuis.", "details": "5 joueurs par équipe · intérieur"}, "Handball": {"resume": "Sport collectif à sept où l'on se passe le ballon à la main pour aller marquer dans le but adverse.", "details": "7 joueurs par équipe · intérieur"}, "Hand Fit": {"resume": "Pratique loisir inspirée du handball, sans contact, mêlant ateliers ludiques et petits jeux. Accessible à tous les niveaux.", "details": "Sans contact · tous niveaux"}, "Rugby Flag": {"resume": "Version sans plaquage du rugby : on stoppe le porteur du ballon en lui retirant une bandelette accrochée à la ceinture.", "details": "Sans contact · mixte"}, "Ultimate": {"resume": "Sport collectif au disque volant (frisbee), sans contact et auto-arbitré, où l'on marque en attrapant le disque dans la zone adverse.", "details": "7 joueurs · fair-play, sans arbitre"}, "Badminton": {"resume": "Sport de raquette où l'on échange un volant par-dessus un filet haut, en simple ou en double.", "details": "Simple ou double · intérieur"}, "Volley Ball": {"resume": "Sport collectif à six : renvoyer le ballon par-dessus le filet sans le laisser toucher le sol, en trois touches maximum.", "details": "6 joueurs par équipe · filet"}, "Basket Ball": {"resume": "Sport collectif à cinq où l'on marque en envoyant le ballon dans le panier adverse.", "details": "5 joueurs par équipe · intérieur"}, "Foot gaelique": {"resume": "Sport irlandais entre football et rugby : on progresse balle au pied et à la main pour marquer entre ou au-dessus des poteaux.", "details": "Sport collectif · mixte"}, "Tèque": {"resume": "Jeu de balle proche du baseball : on frappe la balle puis on court faire le tour des bases avant d'être éliminé.", "details": "2 équipes · frappe et course"}, "Kin-ball": {"resume": "Sport collectif original autour d'un ballon géant (1,20 m) : trois équipes jouent en même temps, l'une frappe, les autres tentent de rattraper.", "details": "3 équipes · gros ballon"}, "Biathlon": {"resume": "Épreuve combinée en version loisir : on alterne course et ateliers d'adresse ou de tir.", "details": "Course + adresse"}, "Dodge Ball": {"resume": "Balle au prisonnier moderne : éliminer les adversaires en les touchant avec le ballon sans se faire toucher.", "details": "2 équipes · esquive"}, "Pétanque": {"resume": "Jeu de boules où l'on pointe et l'on tire pour placer ses boules au plus près du cochonnet.", "details": "En équipes · extérieur"}, "Beach Volley": {"resume": "Volley sur sable, le plus souvent à deux contre deux, en extérieur.", "details": "2 contre 2 · sable"}, "Judo": {"resume": "Art martial de préhension : projections et immobilisations, dans le respect du partenaire.", "details": "Tatami · avec club partenaire"}, "Escalade": {"resume": "Grimpe sur mur ou voie, en salle, alliant force, équilibre et lecture d'itinéraire.", "details": "Avec club partenaire"}, "Athlétisme": {"resume": "Ensemble des disciplines de courses, sauts et lancers.", "details": "Individuel · piste/plateau"}, "Tournoi fin d'année": {"resume": "Rencontre festive qui clôture la saison, mêlant plusieurs activités et un temps convivial.", "details": "Événement de clôture"}, "Kabaddi": {"resume": "Sport de contact venu d'Inde : un attaquant en apnée touche des adversaires puis revient dans son camp sans se faire retenir.", "details": "2 équipes · contact"}, "Parkour": {"resume": "Déplacement fluide en milieu urbain : franchir les obstacles par des sauts et des passages, avec efficacité.", "details": "Avec association partenaire"}, "Tir à L'arc": {"resume": "Tir de précision sur cible à l'arc, tout en concentration et régularité.", "details": "Individuel · précision"}, "Disc Golf": {"resume": "Golf au disque volant : rejoindre des paniers en un minimum de lancers.", "details": "Individuel · extérieur"}}};
-let ADMIN=false, SHOW_PAST=true;
+let ADMIN=false, SHOW_PAST=true, BOOTED=false;
 const WD=["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
 const MO=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
 const d2=iso=>{const[y,m,d]=iso.split("-").map(Number);return new Date(y,m-1,d);};
@@ -523,12 +522,13 @@ function updateProfileBtn(){
   }
 }
 async function refreshCurrentMembre(){
-  if(!CURRENT_USER){ CURRENT_MEMBRE=null; updateProfileBtn(); return; }
+  if(!CURRENT_USER){ CURRENT_MEMBRE=null; updateProfileBtn(); if(BOOTED) applyAdminState(); return; }
   try{
     const snap = await db.collection("membres").doc(CURRENT_USER.uid).get();
     CURRENT_MEMBRE = snap.exists ? Object.assign({id:snap.id}, snap.data()) : null;
   }catch(e){ console.error(e); CURRENT_MEMBRE=null; }
   updateProfileBtn();
+  if(BOOTED) applyAdminState();
 }
 firebase.auth().onAuthStateChanged(async (user)=>{
   CURRENT_USER=user;
@@ -732,6 +732,10 @@ window.__saveMember=async function(){
   errBox.textContent="";
 
   if(MBR_EDIT_ID){
+    if(isLastChefAdmin(MBR_EDIT_ID) && role!=="chefadmin"){
+      errBox.textContent="Impossible : c'est le dernier chef admin. Attribuez d'abord ce rôle à quelqu'un d'autre.";
+      return;
+    }
     try{
       await db.collection("membres").doc(MBR_EDIT_ID).update({tel, multisports:multi, handloisir:hand, role});
       const m=MBR_LIST.find(x=>x.id===MBR_EDIT_ID);
@@ -780,9 +784,18 @@ window.__saveMember=async function(){
   }
   saveBtn.disabled=false; saveBtn.textContent="Ajouter le membre";
 };
+function isLastChefAdmin(id){
+  const target=MBR_LIST.find(m=>m.id===id);
+  if(!target || target.role!=="chefadmin") return false;
+  return MBR_LIST.filter(m=>m.role==="chefadmin").length<=1;
+}
 async function deleteMember(id){
   const m=MBR_LIST.find(x=>x.id===id);
   if(!m) return;
+  if(isLastChefAdmin(id)){
+    alert("Impossible de supprimer le dernier chef admin. Attribuez d'abord ce rôle à quelqu'un d'autre.");
+    return;
+  }
   if(!confirm(`Supprimer ${m.prenom} ${m.nom} de la liste des membres ? Son compte de connexion sera aussi supprimé.`)) return;
   try{
     const password = genPassword(m.nom, m.naissance);
@@ -933,31 +946,15 @@ window.__addSport=function(){
   rebuildLieu(); closeModal(); renderChips(); saveSports();
 };
 
-/* ---------- Mode lecture / admin ---------- */
-function updateModeBtn(){
-  const b=document.getElementById("modeBtn");
-  b.innerHTML = ADMIN ? `<span class="dotw"></span>Mode admin — quitter` : `<span class="dotw"></span>Mode lecture`;
-  b.classList.toggle("on",ADMIN);
-  renderLinks();
+/* ---------- Admin réel : dérivé de la connexion, plus de mot de passe partagé ---------- */
+function setLedeEditable(on){ const l=document.getElementById("lede"); l.classList.toggle("editable",on); l.contentEditable=on?"true":"false"; }
+function applyAdminState(){
+  ADMIN = isAdminRole();
+  document.body.classList.toggle("admin", ADMIN);
+  setLedeEditable(ADMIN);
+  renderCal(); renderChips(); renderLinks();
   if(DATA.poll) renderResults();
 }
-function setLedeEditable(on){ const l=document.getElementById("lede"); l.classList.toggle("editable",on); l.contentEditable=on?"true":"false"; }
-function openLogin(){
-  openModal(`<div class="mhead"><h3>Espace admin</h3><button class="x" onclick="__close()" aria-label="Fermer">✕</button></div>
-    <p class="resume" style="color:var(--ink-soft);font-size:14.5px">Le mode admin permet de modifier le calendrier, le descriptif et les fiches d'activités.</p>
-    <div class="field"><label>Mot de passe</label><input id="pw" type="password" placeholder="••••" onkeydown="if(event.key==='Enter')__login()"></div>
-    <div class="err" id="pwErr"></div>
-    <div class="mactions"><button class="btn primary" onclick="__login()">Se connecter</button><button class="btn" onclick="__close()">Annuler</button></div>`);
-}
-window.__login=function(){
-  const v=document.getElementById("pw").value;
-  if(v==="147"){ ADMIN=true; document.body.classList.add("admin"); setLedeEditable(true); updateModeBtn(); closeModal(); renderCal(); renderChips(); }
-  else{ document.getElementById("pwErr").textContent="Mot de passe incorrect."; document.getElementById("pw").select(); }
-};
-document.getElementById("modeBtn").onclick=function(){
-  if(ADMIN){ ADMIN=false; document.body.classList.remove("admin"); setLedeEditable(false); updateModeBtn(); renderCal(); renderChips(); }
-  else{ openLogin(); }
-};
 
 /* ---------- Descriptif éditable ---------- */
 const lede=document.getElementById("lede");
@@ -1124,9 +1121,10 @@ async function boot(){
   rebuildLieu();
   DATA.poll = DATA.poll || {votes:{}, archives:[]};
   renderTicket(); renderCal(); renderChips(); renderLinks();
-  updateSuggestBadge(); renderResults();
+  updateSuggestBadge();
+  BOOTED = true;
+  applyAdminState();
 }
-updateModeBtn();
 boot();
 </script>
 </body>
