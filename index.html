@@ -209,6 +209,8 @@ tbody tr.past .note{color:var(--flame) !important}
 .membersRow{margin-bottom:12px}
 .mbr-list{margin-top:18px; max-height:240px; overflow:auto; border-top:1px solid var(--line)}
 .mbr-row{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px}
+.pub-row{padding:7px 0; font-size:14px}
+#pubMbrList{max-height:none; overflow:visible}
 .mbr-row .nm{font-weight:700}
 .mbr-row .sub{color:var(--ink-soft); font-size:12px; margin-top:2px}
 .mbr-row .tags{display:flex; gap:5px; margin-top:5px; flex-wrap:wrap}
@@ -565,7 +567,7 @@ async function saveLede(v){ try{ await docRef.update({lede:v}); toast("Descripti
 
 /* ---------- Ticket ---------- */
 function nextIndex(){ let i=DATA.calendrier.findIndex(c=>d2(c.date_iso)>=T&&c.state!=="vacances"); return i<0?DATA.calendrier.length-1:i; }
-const ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:12px;height:12px;vertical-align:-1px;margin-right:3px"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>';
+const ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:20px;height:20px;vertical-align:-4px;margin-right:5px"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>';
 function renderTicket(){
   const c=DATA.calendrier[nextIndex()], dt=d2(c.date_iso), isT=dt.getTime()===T.getTime();
   let act = c.state==="tournoi"?`<span class="p">${esc(c.princ)}</span>`
@@ -1343,8 +1345,8 @@ function renderPublicMembersList(){
   const wantHand=document.getElementById("pf-hand").checked;
   const list=(window.__pubMbrList||[]).filter(m=>(wantMulti&&m.multisports)||(wantHand&&m.handloisir));
   if(!list.length){ box.innerHTML=`<p class="mbr-empty">Aucun membre pour ce filtre.</p>`; return; }
-  const sorted=list.slice().sort((a,b)=>(a.nom||"").localeCompare(b.nom||"","fr"));
-  box.innerHTML = sorted.map(m=>`<div class="mbr-row"><div class="nm" style="font-weight:600">${esc(m.prenom)} ${esc(m.nom)}</div></div>`).join("");
+  const sorted=list.slice().sort((a,b)=>(a.prenom||"").localeCompare(b.prenom||"","fr"));
+  box.innerHTML = sorted.map(m=>`<div class="pub-row">${esc(m.prenom)} ${esc(m.nom)}</div>`).join("");
 }
 document.getElementById("publicMembersBtn").onclick=openPublicMembersModal;
 
