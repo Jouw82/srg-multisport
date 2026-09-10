@@ -19,7 +19,8 @@
   --sea:#0E7C86; --sea-soft:#E3F1F0;
   --gold:#F0A94E; --gold-soft:#FDF0DE;
   --green:#1E9E52; --green-soft:#E4F4E7; --green-line:#B7E0C0; --green-ink:#1C7A40;
-  --vac:#C7C7C7; --vac-ink:#4A4F54;
+  --vac-accent:#c75555;
+  --vac:#EAD3D3; --vac-ink:#7A3B3B;
   --shadow:0 1px 2px rgba(22,35,46,.04), 0 12px 30px -18px rgba(22,35,46,.25);
 }
 [data-theme="dark"]{
@@ -31,7 +32,8 @@
   --sea:#3FCAD4; --sea-soft:rgba(63,202,212,.14);
   --gold:#F3B968; --gold-soft:rgba(243,185,104,.14);
   --green:#39C978; --green-soft:rgba(57,201,120,.14); --green-line:rgba(57,201,120,.35); --green-ink:#6FE39B;
-  --vac:#2C2F33; --vac-ink:#9BA2A7;
+  --vac-accent:#c75555;
+  --vac:#3A2626; --vac-ink:#E3B3B3;
   --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px -18px rgba(0,0,0,.6);
 }
 [data-theme="dark"] body{background:var(--paper)}
@@ -42,6 +44,8 @@
 [data-theme="dark"] h1{color:#dfab2d}
 [data-theme="dark"] .btn.suggestBtn{border-color:#dfab2d; color:#dfab2d}
 [data-theme="dark"] .ticket{background:rgba(255,122,71,.10)}
+[data-theme="dark"] .chip.f2{color:#000}
+[data-theme="dark"] .chip.f2 .cnt{color:#000}
 [data-theme="dark"] .note{color:#dfab2d}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -54,20 +58,20 @@ a{color:var(--sea)}
 .topbar{position:sticky; top:0; z-index:60; background:var(--ink); color:#fff}
 .topbar-wrap{max-width:1040px; margin:0 auto; padding:7px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; min-height:40px}
 .tb-brand{font-family:"Archivo"; font-weight:800; font-size:12.5px; letter-spacing:.03em; display:flex; align-items:center; gap:7px; flex:0 0 auto}
-.tb-brand .b{background:#153AA3; padding:3px 7px; border-radius:5px; font-size:10.5px}
+.tb-brand .b{background:#153AA3; color:#fff; padding:3px 7px; border-radius:5px; font-size:10.5px}
 .tb-brand span{font-weight:600; color:#dfab2d; font-size:12px}
 .tb-links{display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; flex:1 1 auto}
-.tb-link{display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:#fff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.22); border-radius:999px; padding:4px 10px 4px 8px; text-decoration:none; cursor:pointer; font-family:inherit}
-.tb-link:hover{background:rgba(255,255,255,.17)}
+.tb-link{display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:#fff; background:rgba(255,255,255,.08); border:0; border-radius:9px; padding:6px 11px; text-decoration:none; cursor:pointer; font-family:inherit}
+.tb-link:hover{background:rgba(255,255,255,.22)}
 .tb-link svg{width:12px; height:12px; flex:none}
-.tb-link.empty{border-style:dashed; opacity:.7}
+.tb-link.empty{border:1.5px dashed rgba(255,255,255,.35); opacity:.75}
 .modeBtn{font:inherit; font-size:12px; font-weight:600; height:32px; padding:0 14px; box-sizing:border-box; border-radius:9px; border:0; background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:background .12s}
 .modeBtn:hover{background:rgba(255,255,255,.22)}
 .modeBtn .dotw{width:6px; height:6px; border-radius:50%; background:#93A0A8}
-.modeBtn.on{background:#1E9E52; border-color:#1E9E52; color:#fff}
+.modeBtn.on{background:rgba(255,255,255,.08); border-color:transparent; color:#20af0d}
 .themeBtn{font-size:15px; width:32px; height:32px; box-sizing:border-box; border-radius:9px; border:0; background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; line-height:1; flex:none; transition:background .12s}
 .themeBtn:hover{background:rgba(255,255,255,.22)}
-.modeBtn.on .dotw{background:#fff}
+.modeBtn.on .dotw{background:#20af0d}
 #editToggleBtn{display:none}
 
 /* ---------- HERO ---------- */
@@ -108,8 +112,8 @@ h1 .yr{display:block; color:var(--flame); font-size:.6em; letter-spacing:.01em; 
 .legend{display:flex; flex-wrap:wrap; gap:13px; font-size:12.5px; color:var(--ink-soft)}
 .legend span{display:inline-flex; align-items:center; gap:6px}
 .legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
-.lg-ok{background:var(--sea)} .lg-tbd{background:var(--card);border:1.5px dashed var(--line-strong)}
-.lg-vac{background:var(--vac);border:1px solid var(--line-strong)} .lg-tour{background:var(--gold)}
+.lg-ok{background:var(--sea)}
+.lg-vac{background:var(--vac-accent)}
 
 table{width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden}
 thead th{position:sticky; top:49px; z-index:5; background:var(--card); text-align:left; font-size:12px; font-weight:600; color:var(--ink-faint); padding:11px 16px; border-bottom:1px solid var(--line-strong);}
@@ -122,7 +126,8 @@ tr.mrow:first-child td{border-top:0}
 .mdiv .lab{font-family:"Archivo"; font-weight:700; font-size:13.5px; color:var(--ink); white-space:nowrap; letter-spacing:.02em}
 .mdiv .lab em{font-style:normal; color:var(--ink-faint); font-weight:500}
 .mdiv .rule{height:1px; background:var(--line-strong); flex:1}
-.dcell{white-space:nowrap; width:96px}
+.dcell{white-space:nowrap; width:96px; background:rgba(0,0,0,.05)}
+[data-theme="dark"] .dcell{background:rgba(0,0,0,.22)}
 .dcell .dnum{font-family:"Archivo"; font-weight:700; font-size:16px}
 .dcell .dwd{font-size:12px; color:var(--ink-faint)}
 .act-name{font-weight:600}
@@ -133,10 +138,10 @@ tr.mrow:first-child td{border-top:0}
 .todayTag{display:inline-block; font-size:10.5px; font-weight:700; color:#fff; background:var(--highlight); padding:2px 7px; border-radius:6px; margin-left:8px; vertical-align:middle}
 tr.s-ok{box-shadow:inset 4px 0 0 var(--sea)}
 tr.s-tournoi{box-shadow:inset 4px 0 0 var(--gold); background:var(--gold-soft)}
-tr.s-vacances{background:var(--vac); color:var(--vac-ink); box-shadow:inset 4px 0 0 var(--line-strong); font-style:italic}
+tr.s-vacances{background:var(--vac); color:var(--vac-ink); box-shadow:inset 4px 0 0 var(--vac-accent); font-style:italic}
 tr.s-vacances .dcell .dnum{color:var(--vac-ink)}
 tr.today{background:var(--highlight-soft) !important; box-shadow:inset 4px 0 0 var(--highlight)}
-tbody tr.past{background:var(--vac); box-shadow:inset 4px 0 0 var(--line-strong)}
+tbody tr.past{background:var(--line-strong); box-shadow:inset 4px 0 0 var(--ink-faint)}
 tbody tr.past td{font-style:italic; color:var(--ink-faint)}
 tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7}
 .vacLabel{font-weight:600}
@@ -166,11 +171,15 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 .bday-age{font-weight:700}
 .memo-text{font-size:14px; color:var(--ink); white-space:pre-wrap; line-height:1.5; min-height:20px}
 .memo-text:empty::before{content:"Aucune actualité pour l'instant."; color:var(--ink-faint); font-style:italic}
+.memo-date{font-weight:500; font-size:11px; color:#000; text-transform:none; letter-spacing:0}
+[data-theme="dark"] .memo-date{color:#fff}
 .link-menu{position:fixed; z-index:200; background:var(--card); border:1px solid var(--line-strong); border-radius:10px; box-shadow:0 12px 30px -10px rgba(0,0,0,.4); padding:7px; display:flex; gap:6px; align-items:center}
 .link-menu input{font:inherit; font-size:13px; padding:6px 8px; border:1px solid var(--line-strong); border-radius:6px; background:var(--paper); color:var(--ink); width:180px}
 .link-menu button{font:inherit; font-size:12.5px; font-weight:600; padding:6px 10px; border-radius:6px; border:1px solid var(--sea); background:var(--sea-soft); color:var(--sea); cursor:pointer; white-space:nowrap}
 .link-menu button:hover{background:var(--sea); color:#fff}
 .note a, .memo-text a{color:var(--highlight); font-weight:600; text-decoration:underline}
+tbody tr.past .note{color:var(--flame) !important}
+[data-theme="dark"] tbody tr.past .note{color:#dfab2d !important}
 .memo-text.editable{cursor:text; border:1.5px dashed var(--sea); border-radius:8px; padding:7px 32px 7px 10px; margin:-7px -10px; position:relative; background:var(--sea-soft)}
 .memo-text.editable::after{content:"✎"; position:absolute; right:11px; top:11px; font-size:12px; color:var(--sea); opacity:.65}
 .memo-text.editable:hover{background:var(--card)}
@@ -180,7 +189,7 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 
 .profileBtn{font-size:12px; height:32px; padding:0 14px; box-sizing:border-box; border-radius:9px; border:0; background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:7px; font:inherit; font-weight:600}
 .profileBtn:hover{background:rgba(255,255,255,.22)}
-.profileBtn.on{background:#1E9E52; border-color:#1E9E52}
+.profileBtn.on{background:rgba(255,255,255,.08); border-color:transparent; color:#20af0d}
 .role-select{width:100%; font:inherit; font-size:15px; padding:10px 12px; border:1px solid var(--line-strong); border-radius:10px; background:var(--paper); color:var(--ink)}
 .pw-reveal{margin-top:14px; padding:12px 14px; border-radius:10px; background:var(--gold-soft); border:1px solid var(--gold); font-size:13.5px}
 .pw-reveal b{font-family:"Archivo"; font-size:16px; letter-spacing:.03em}
@@ -303,6 +312,7 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 /* ---------- TOAST ---------- */
 #backToTop{position:fixed; right:18px; bottom:18px; width:42px; height:42px; border-radius:50%; border:1px solid var(--line-strong); background:var(--solid); color:#fff; font-size:18px; cursor:pointer; display:none; align-items:center; justify-content:center; box-shadow:var(--shadow); z-index:60; transition:opacity .15s}
 #backToTop.show{display:flex}
+[data-theme="dark"] #backToTop{background:var(--sea); border-color:var(--sea)}
 #backToTop:hover{opacity:.85}
 .toast{position:fixed; left:16px; bottom:16px; background:var(--solid); color:#fff; font-size:13px; font-weight:600; padding:10px 15px; border-radius:10px; box-shadow:var(--shadow); opacity:0; transform:translateY(8px); transition:opacity .18s, transform .18s; pointer-events:none; z-index:90; max-width:80vw}
 .toast.show{opacity:1; transform:translateY(0)}
@@ -369,7 +379,7 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
 
   <div class="dash-grid">
     <div class="dash-card">
-      <h3>Actualités <span class="only-admin" id="memoEditHint" style="font-weight:500;font-size:11px;color:var(--sea)">(cliquez pour éditer)</span></h3>
+      <h3>Actualités <span id="memoDate" class="memo-date"></span> <span class="only-admin" id="memoEditHint" style="font-weight:500;font-size:11px;color:var(--sea)">(cliquez pour éditer)</span></h3>
       <div id="memoBox"><div class="memo-text" id="memoText"></div></div>
     </div>
     <div class="dash-card dash-card-sm">
@@ -392,8 +402,6 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
     </div>
     <div class="legend">
       <span><i class="lg-ok"></i>Programmée</span>
-      <span><i class="lg-tour"></i>Tournoi</span>
-      <span><i class="lg-tbd"></i>À programmer</span>
       <span><i class="lg-vac"></i>Vacances</span>
     </div>
   </div>
@@ -1064,13 +1072,23 @@ function renderBirthdays(list){
 function renderMemo(){
   const el=document.getElementById("memoText"); if(!el) return;
   el.innerHTML = sanitizeRichText(DATA.memo||"");
+  const dEl=document.getElementById("memoDate");
+  if(dEl){
+    if(DATA.memoDate){
+      const [y,m,d]=DATA.memoDate.split("-");
+      dEl.textContent = `(${d}/${m}/${y})`;
+    } else { dEl.textContent=""; }
+  }
 }
 function setMemoEditable(on){
   const el=document.getElementById("memoText"); if(!el) return;
   el.classList.toggle("editable",on); el.contentEditable=on?"true":"false";
 }
 async function saveMemo(v){
-  try{ await docRef.update({memo:v}); toast("Actualité enregistrée."); }
+  const today=new Date();
+  const iso=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+  DATA.memoDate=iso;
+  try{ await docRef.update({memo:v, memoDate:iso}); toast("Actualité enregistrée."); renderMemo(); }
   catch(e){ console.error(e); toast("Échec de l'enregistrement.",true); }
 }
 /* ---------- Suggestion d'ajout de sport ---------- */
@@ -1416,12 +1434,14 @@ async function boot(){
       if(Array.isArray(d.sports)&&d.sports.length) DATA.sports=d.sports;
       if(d.info) DATA.info=d.info;
       if(typeof d.lede==="string") lede.textContent=d.lede;
+      if(typeof d.memo==="string") DATA.memo=d.memo;
+      if(typeof d.memoDate==="string") DATA.memoDate=d.memoDate;
       if(d.links) DATA.links=d.links;
       if(d.poll) DATA.poll=d.poll;
     } else {
       DATA.links = DATA.links || {whatsapp:"",spotify:"",srg:""};
       DATA.poll = DATA.poll || {votes:{}, archives:[]};
-      await docRef.set({calendrier:stripCal(), sports:DATA.sports, info:DATA.info, lede:lede.textContent.trim(), links:DATA.links, poll:DATA.poll});
+      await docRef.set({calendrier:stripCal(), sports:DATA.sports, info:DATA.info, lede:lede.textContent.trim(), links:DATA.links, poll:DATA.poll, memo:"", memoDate:""});
     }
   }catch(e){ console.error(e); toast("Connexion à la base impossible — affichage hors-ligne.",true); }
   DATA.links = DATA.links || {whatsapp:"",spotify:"",srg:""};
