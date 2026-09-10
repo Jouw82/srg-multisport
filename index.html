@@ -66,6 +66,7 @@ a{color:var(--sea)}
 .themeBtn{font-size:15px; width:32px; height:32px; box-sizing:border-box; border-radius:999px; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.08); color:#fff; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; line-height:1; flex:none; transition:background .12s}
 .themeBtn:hover{background:rgba(255,255,255,.17)}
 .modeBtn.on .dotw{background:#fff}
+#editToggleBtn{display:none}
 
 /* ---------- HERO ---------- */
 header{padding:40px 0 8px}
@@ -178,6 +179,10 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 .check-row label{display:flex; align-items:center; gap:7px; font-size:14px; font-weight:600; cursor:pointer; color:var(--ink)}
 .check-row input[type="checkbox"]{width:16px; height:16px; accent-color:var(--sea)}
 .mbr-empty{color:var(--ink-faint); font-size:13px; padding:14px 0}
+.profileDropdown{position:absolute; top:calc(100% + 10px); right:0; width:280px; max-width:calc(100vw - 32px); background:var(--card); color:var(--ink); border:1px solid var(--line-strong); border-radius:14px; box-shadow:0 20px 50px -20px rgba(0,0,0,.55); padding:16px; z-index:75; display:none}
+.profileDropdown.open{display:block}
+.profileDropdown .field{margin-top:12px}
+.profileDropdown .field:first-child{margin-top:0}
 .two-col{display:grid; grid-template-columns:1fr 1fr; gap:12px}
 @media(max-width:480px){.two-col{grid-template-columns:1fr}}
 
@@ -297,7 +302,11 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
     <span class="tb-links" id="tbLinks"></span>
     <div class="tb-right" style="display:flex;align-items:center;gap:8px;flex:0 0 auto">
       <button class="themeBtn" id="themeBtn" aria-label="Changer de thème" title="Changer de thème">🌙</button>
-      <button class="profileBtn" id="profileBtn">👤 Profil</button>
+      <button class="modeBtn" id="editToggleBtn"><span class="dotw"></span>Activer l'édition</button>
+      <div style="position:relative">
+        <button class="profileBtn" id="profileBtn">👤 Profil</button>
+        <div class="profileDropdown" id="profileDropdown"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -535,22 +544,34 @@ firebase.auth().onAuthStateChanged(async (user)=>{
   await refreshCurrentMembre();
 });
 
+/* ---------- Connexion / profil en menu déroulant sous le bouton ---------- */
+function closeProfileDropdown(){ document.getElementById("profileDropdown").classList.remove("open"); }
 function openProfileBtn(){
-  if(CURRENT_MEMBRE) openProfilePanel(); else openLoginPicker();
+  const dd=document.getElementById("profileDropdown");
+  if(dd.classList.contains("open")){ closeProfileDropdown(); return; }
+  dd.classList.add("open");
+  if(CURRENT_MEMBRE) renderProfileDropdown(); else renderLoginDropdown();
 }
-async function openLoginPicker(){
+document.addEventListener("click",(e)=>{
+  const dd=document.getElementById("profileDropdown"), btn=document.getElementById("profileBtn");
+  if(dd.classList.contains("open") && !dd.contains(e.target) && e.target!==btn && !btn.contains(e.target)) closeProfileDropdown();
+});
+document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeProfileDropdown(); });
+
+async function renderLoginDropdown(){
+  const dd=document.getElementById("profileDropdown");
+  dd.innerHTML = `<p class="resume" style="font-size:13.5px;color:var(--ink-soft);margin:0 0 10px">Chargement…</p>`;
   const list = await loadPublicIndex();
+  if(!dd.classList.contains("open")) return; // fermé entre-temps
   if(!list.length){
-    openModal(`<div class="mhead"><h3>Connexion</h3><button class="x" onclick="__close()" aria-label="Fermer">✕</button></div>
-      <p class="resume" style="font-size:14px;color:var(--ink-soft)">Aucun membre n'est encore enregistré. Un admin doit d'abord créer des comptes depuis la gestion des membres.</p>`);
+    dd.innerHTML = `<p class="resume" style="font-size:13.5px;color:var(--ink-soft);margin:0">Aucun membre n'est encore enregistré. Un admin doit d'abord créer des comptes depuis la gestion des membres.</p>`;
     return;
   }
   const opts = list.slice().sort((a,b)=>(a.nom||"").localeCompare(b.nom||"","fr"))
     .map(m=>`<button type="button" class="name-opt" data-uid="${esc(m.uid)}">${esc(m.prenom)} ${esc(m.nom)}</button>`).join("");
-  openModal(`<div class="mhead"><h3>Connexion</h3><button class="x" onclick="__close()" aria-label="Fermer">✕</button></div>
-    <p class="resume" style="font-size:14px;color:var(--ink-soft)">Choisissez votre nom dans la liste.</p>
+  dd.innerHTML = `<p class="resume" style="font-size:13.5px;color:var(--ink-soft);margin:0 0 10px">Choisissez votre nom.</p>
     <div class="name-pick" id="namePick">${opts}</div>
-    <div id="pwStep"></div>`);
+    <div id="pwStep"></div>`;
   document.querySelectorAll("#namePick .name-opt").forEach(b=>b.onclick=()=>{
     document.querySelectorAll("#namePick .name-opt").forEach(x=>x.classList.remove("picked"));
     b.classList.add("picked");
@@ -567,18 +588,22 @@ window.__doLogin=async function(uid,email){
   const err=document.getElementById("loginErr");
   try{
     await firebase.auth().signInWithEmailAndPassword(email, pw);
+    CURRENT_USER = firebase.auth().currentUser;
+    await refreshCurrentMembre();
     err.textContent="";
-    closeModal();
+    closeProfileDropdown();
     toast("Connecté.");
+    if(PENDING_AFTER_LOGIN){ const fn=PENDING_AFTER_LOGIN; PENDING_AFTER_LOGIN=null; fn(); }
   }catch(e){
     console.error(e);
     err.textContent="Mot de passe incorrect.";
   }
 };
-function openProfilePanel(){
+function renderProfileDropdown(){
+  const dd=document.getElementById("profileDropdown");
   const m=CURRENT_MEMBRE;
   const roleLabel = m.role==="chefadmin"?"Chef admin":m.role==="admin"?"Admin":"Membre";
-  openModal(`<div class="mhead"><h3>${esc(m.prenom)} ${esc(m.nom)}<span class="role-badge${m.role!=="membre"?" adm":""}">${roleLabel}</span></h3><button class="x" onclick="__close()" aria-label="Fermer">✕</button></div>
+  dd.innerHTML = `<div class="mhead" style="margin-bottom:10px"><h3 style="font-size:17px">${esc(m.prenom)} ${esc(m.nom)}<span class="role-badge${m.role!=="membre"?" adm":""}">${roleLabel}</span></h3></div>
     <div class="field"><label>Email</label><input id="p-email" type="email" value="${esc(m.email||"")}"></div>
     <div class="field"><label>Téléphone</label><input id="p-tel" type="tel" value="${esc(m.tel||"")}"></div>
     <div class="err" id="profErr"></div>
@@ -586,7 +611,7 @@ function openProfilePanel(){
       <button class="btn primary" onclick="__saveProfile()">Enregistrer</button>
       <button class="btn" onclick="__logout()">Se déconnecter</button>
     </div>
-    <p class="poll-note">Nom, prénom et date de naissance sont fixés par l'admin à la création du compte.</p>`);
+    <p class="poll-note" style="margin-top:10px">Nom, prénom et date de naissance sont fixés par l'admin à la création du compte.</p>`;
 }
 window.__saveProfile=async function(){
   const email=document.getElementById("p-email").value.trim();
@@ -600,14 +625,14 @@ window.__saveProfile=async function(){
       catch(e2){ console.error(e2); toast("Email mis à jour dans votre fiche, mais pas sur votre connexion — reconnectez-vous si besoin.",true); }
     }
     CURRENT_MEMBRE.email=email; CURRENT_MEMBRE.tel=tel;
-    closeModal(); toast("Profil mis à jour.");
+    closeProfileDropdown(); toast("Profil mis à jour.");
   }catch(e){ console.error(e); err.textContent="Échec de l'enregistrement."; }
 };
 window.__logout=async function(){
   await firebase.auth().signOut();
-  closeModal(); toast("Déconnecté.");
+  closeProfileDropdown(); toast("Déconnecté.");
 };
-document.getElementById("profileBtn").onclick=openProfileBtn;
+document.getElementById("profileBtn").onclick=(e)=>{ e.stopPropagation(); openProfileBtn(); };
 
 /* ---------- Gestion des membres (admin) ---------- */
 let MBR_EDIT_ID = null;
@@ -946,14 +971,38 @@ window.__addSport=function(){
   rebuildLieu(); closeModal(); renderChips(); saveSports();
 };
 
-/* ---------- Admin réel : dérivé de la connexion, plus de mot de passe partagé ---------- */
+/* ---------- Admin réel : rôle (droit) et mode édition (vue) sont deux choses distinctes ---------- */
+let IS_ADMIN_ROLE=false, EDIT_MODE=false;
 function setLedeEditable(on){ const l=document.getElementById("lede"); l.classList.toggle("editable",on); l.contentEditable=on?"true":"false"; }
+function updateEditToggleBtn(){
+  const b=document.getElementById("editToggleBtn"); if(!b) return;
+  b.style.display = IS_ADMIN_ROLE ? "inline-flex" : "none";
+  b.innerHTML = EDIT_MODE ? `<span class="dotw"></span>Mode édition — quitter` : `<span class="dotw"></span>Activer l'édition`;
+  b.classList.toggle("on", EDIT_MODE);
+}
 function applyAdminState(){
-  ADMIN = isAdminRole();
+  IS_ADMIN_ROLE = isAdminRole();
+  if(!IS_ADMIN_ROLE) EDIT_MODE=false; // jamais de vue édition sans le rôle, même en cas de perte de droits en cours de session
+  ADMIN = IS_ADMIN_ROLE && EDIT_MODE;
   document.body.classList.toggle("admin", ADMIN);
   setLedeEditable(ADMIN);
+  updateEditToggleBtn();
   renderCal(); renderChips(); renderLinks();
   if(DATA.poll) renderResults();
+}
+document.getElementById("editToggleBtn").onclick=function(){
+  if(!IS_ADMIN_ROLE) return;
+  EDIT_MODE = !EDIT_MODE;
+  applyAdminState();
+};
+
+/* ---------- Suggérer une activité : nécessite d'être connecté (mode interactif) ---------- */
+let PENDING_AFTER_LOGIN=null;
+function requireLogin(next){
+  PENDING_AFTER_LOGIN=next;
+  const dd=document.getElementById("profileDropdown");
+  dd.classList.add("open");
+  renderLoginDropdown();
 }
 
 /* ---------- Descriptif éditable ---------- */
@@ -972,7 +1021,11 @@ function setView(showPast){
   renderCal();
 }
 toggleUpcoming.onclick=()=>setView(!SHOW_PAST);
-document.getElementById("suggestBtn").onclick=openSuggestModal;
+document.getElementById("suggestBtn").onclick=function(e){
+  if(CURRENT_MEMBRE){ openSuggestModal(); return; }
+  e.stopPropagation();
+  requireLogin(openSuggestModal);
+};
 document.getElementById("membersBtn").onclick=openMembersPanel;
 
 
