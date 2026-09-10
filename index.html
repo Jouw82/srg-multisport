@@ -98,6 +98,10 @@ h1 .yr{display:block; color:var(--flame); font-size:.6em; letter-spacing:.01em; 
 .ticket .act .p{font-weight:600}
 .ticket .meta{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px}
 .ticket .lieu{margin:0}
+.lieuEdit{cursor:text; border:1.5px dashed var(--sea); outline:none}
+.lieuEdit:hover{background:var(--card)}
+.lieuEdit:focus{border-style:solid; background:var(--card); box-shadow:0 0 0 3px var(--sea-soft)}
+.lieuEdit:empty::before{content:attr(data-ph); color:var(--ink-faint); font-style:italic}
 
 /* ---------- CALENDAR ---------- */
 .cal-head{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin:34px 0 12px}
@@ -399,6 +403,7 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
       </button>
       <button type="button" class="btn suggestBtn" id="suggestBtn">Suggérer une activité<span class="cnt" id="suggestCnt" style="display:none"></span></button>
       <button type="button" class="btn sportsJump" id="sportsJumpBtn">Liste des sports</button>
+      <button type="button" class="btn sportsJump" id="publicMembersBtn">Membres</button>
     </div>
     <div class="legend">
       <span><i class="lg-ok"></i>Programmée</span>
@@ -560,17 +565,38 @@ async function saveLede(v){ try{ await docRef.update({lede:v}); toast("Descripti
 
 /* ---------- Ticket ---------- */
 function nextIndex(){ let i=DATA.calendrier.findIndex(c=>d2(c.date_iso)>=T&&c.state!=="vacances"); return i<0?DATA.calendrier.length-1:i; }
+const ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:12px;height:12px;vertical-align:-1px;margin-right:3px"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>';
 function renderTicket(){
   const c=DATA.calendrier[nextIndex()], dt=d2(c.date_iso), isT=dt.getTime()===T.getTime();
   let act = c.state==="tournoi"?`<span class="p">${esc(c.princ)}</span>`
-        : REAL(c.princ)?`<span class="p">${esc(c.princ)}</span>`+(REAL(c.sec)?` · ${esc(c.sec)}`:"")
+        : REAL(c.princ)?`<span class="p">${esc(c.princ)}</span>`+(REAL(c.sec)?` &amp; ${esc(c.sec)}`:"")
         : `<span class="free">Activité à définir</span>`;
   const l=lieuOf(c.princ);
+  let lieuHtml="";
+  if(ADMIN && REAL(c.princ)){
+    lieuHtml = `<span class="lieu">${ICON_PIN}<span class="lieuEdit" id="ticketLieu" contenteditable="true" data-sport="${esc(c.princ)}" data-ph="Lieu…">${esc(l)}</span></span>`;
+  } else if(l){
+    lieuHtml = `<span class="lieu">${ICON_PIN}${esc(l)}</span>`;
+  }
   document.getElementById("ticket").innerHTML=
     `<div class="k"><span class="dot"></span>${isT?"La séance d'aujourd'hui":"Prochaine séance"}</div>`+
     `<div class="day">${WD[dt.getDay()]} ${dt.getDate()} ${MO[dt.getMonth()]}</div>`+
     `<div class="act">${act}</div>`+
-    `<div class="meta">${l?`<span class="lieu">${esc(l)}</span>`:""}${/Apéro/i.test(c.note)?`<span class="aperoBadge">Apéro</span>`:""}</div>`;
+    `<div class="meta">${lieuHtml}${/Apéro/i.test(c.note)?`<span class="aperoBadge">Apéro</span>`:""}</div>`;
+  const le=document.getElementById("ticketLieu");
+  if(le){
+    le.addEventListener("blur",async ()=>{
+      const sportName=le.dataset.sport;
+      const newLieu=le.textContent.trim();
+      const sp=DATA.sports.find(s=>s.nom===sportName);
+      if(sp && sp.lieu!==newLieu){
+        sp.lieu=newLieu; rebuildLieu();
+        try{ await docRef.update({sports:DATA.sports}); toast("Lieu mis à jour."); }
+        catch(e){ console.error(e); toast("Échec de l'enregistrement du lieu.",true); }
+        renderTicket();
+      }
+    });
+  }
 }
 
 /* ---------- Calendrier ---------- */
@@ -859,7 +885,7 @@ async function openMembersPanel(){
 window.__resyncIndex=async function(){
   try{
     const idx = MBR_LIST.map(m=>{
-      const entry={uid:m.id, nom:m.nom, prenom:m.prenom, loginEmail:m.loginEmail||m.email};
+      const entry={uid:m.id, nom:m.nom, prenom:m.prenom, loginEmail:m.loginEmail||m.email, multisports:!!m.multisports, handloisir:!!m.handloisir};
       if(m.naissance){
         const [ny,nm,nd]=m.naissance.split("-").map(Number);
         entry.jour=nd; entry.mois=nm; entry.annee=ny;
@@ -972,6 +998,9 @@ window.__saveMember=async function(){
       await db.collection("membres").doc(MBR_EDIT_ID).update({tel, multisports:multi, handloisir:hand, role});
       const m=MBR_LIST.find(x=>x.id===MBR_EDIT_ID);
       if(m) Object.assign(m,{tel,multisports:multi,handloisir:hand,role});
+      const idx = await loadPublicIndex();
+      const entry = idx.find(x=>x.uid===MBR_EDIT_ID);
+      if(entry){ entry.multisports=multi; entry.handloisir=hand; await savePublicIndex(idx); }
       __cancelMemberEdit(); renderMembersList();
       toast("Membre mis à jour.");
     }catch(e){ console.error(e); errBox.textContent="Échec de l'enregistrement."; }
@@ -992,7 +1021,7 @@ window.__saveMember=async function(){
     await db.collection("membres").doc(uid).set(membre);
     const idx = await loadPublicIndex();
     const [ny,nm,nd] = naissance.split("-").map(Number);
-    idx.push({uid,nom,prenom,loginEmail,jour:nd,mois:nm,annee:ny});
+    idx.push({uid,nom,prenom,loginEmail,jour:nd,mois:nm,annee:ny,multisports:multi,handloisir:hand});
     await savePublicIndex(idx);
     await sAuth.signOut();
     MBR_LIST.push(Object.assign({id:uid},membre));
@@ -1241,7 +1270,7 @@ function applyAdminState(){
   setMemoEditable(ADMIN);
   renderMemo();
   updateEditToggleBtn();
-  renderCal(); renderChips(); renderLinks();
+  renderCal(); renderChips(); renderLinks(); renderTicket();
   if(DATA.poll) renderResults();
 }
 document.getElementById("editToggleBtn").onclick=function(){
@@ -1293,6 +1322,32 @@ document.getElementById("sportsJumpBtn").onclick=function(){
   const el=document.querySelector(".repertoire");
   if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
 };
+
+/* ---------- Consultation publique des membres (prénom + nom uniquement) ---------- */
+async function openPublicMembersModal(){
+  openModal(`<div class="mhead"><h3>Membres du club</h3><button class="x" onclick="__close()" aria-label="Fermer">✕</button></div>
+    <div class="check-row" style="margin-top:4px">
+      <label><input type="checkbox" id="pf-multi" checked> Multisports</label>
+      <label><input type="checkbox" id="pf-hand" checked> Hand Loisir</label>
+    </div>
+    <div class="mbr-list" id="pubMbrList" style="margin-top:14px"><p class="mbr-empty">Chargement…</p></div>`);
+  const list = await loadPublicIndex();
+  window.__pubMbrList = list;
+  renderPublicMembersList();
+  document.getElementById("pf-multi").onchange=renderPublicMembersList;
+  document.getElementById("pf-hand").onchange=renderPublicMembersList;
+}
+function renderPublicMembersList(){
+  const box=document.getElementById("pubMbrList"); if(!box) return;
+  const wantMulti=document.getElementById("pf-multi").checked;
+  const wantHand=document.getElementById("pf-hand").checked;
+  const list=(window.__pubMbrList||[]).filter(m=>(wantMulti&&m.multisports)||(wantHand&&m.handloisir));
+  if(!list.length){ box.innerHTML=`<p class="mbr-empty">Aucun membre pour ce filtre.</p>`; return; }
+  const sorted=list.slice().sort((a,b)=>(a.nom||"").localeCompare(b.nom||"","fr"));
+  box.innerHTML = sorted.map(m=>`<div class="mbr-row"><div class="nm" style="font-weight:600">${esc(m.prenom)} ${esc(m.nom)}</div></div>`).join("");
+}
+document.getElementById("publicMembersBtn").onclick=openPublicMembersModal;
+
 
 /* ---------- Retour en haut de page ---------- */
 const backToTopBtn=document.getElementById("backToTop");
