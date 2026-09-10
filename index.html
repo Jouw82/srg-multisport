@@ -150,11 +150,12 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 /* ---------- RÉPERTOIRE ---------- */
 .repertoire{margin:48px 0 10px; padding-top:30px; border-top:1px solid var(--line)}
 
-.dash-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:26px 0}
+.dash-grid{display:grid; grid-template-columns:2fr 1fr; gap:16px; margin:26px 0}
 .dash-card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; box-shadow:var(--shadow)}
 .dash-card h3{font-family:"Archivo"; font-weight:700; font-size:13.5px; margin:0 0 10px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; display:flex; align-items:center; gap:8px}
-.bday-item{display:flex; align-items:center; gap:10px; padding:6px 0; font-size:14px}
-.bday-item .d{font-family:"Archivo"; font-weight:700; font-size:13px; color:var(--sea); background:var(--sea-soft); border-radius:8px; padding:3px 8px; flex:none}
+.dash-card-sm{padding:14px 16px}
+.dash-card-sm h3{font-size:12px; margin-bottom:8px}
+.bday-item{padding:6px 0; font-size:13px; color:var(--ink)}
 .memo-text{font-size:14px; color:var(--ink); white-space:pre-wrap; line-height:1.5; min-height:20px}
 .memo-text:empty::before{content:"Aucune actualité pour l'instant."; color:var(--ink-faint); font-style:italic}
 .memo-text.editable{cursor:text; border:1.5px dashed var(--sea); border-radius:8px; padding:7px 32px 7px 10px; margin:-7px -10px; position:relative; background:var(--sea-soft)}
@@ -287,6 +288,9 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 .admin-block{display:none} body.admin .admin-block{display:block}
 
 /* ---------- TOAST ---------- */
+#backToTop{position:fixed; right:18px; bottom:18px; width:42px; height:42px; border-radius:50%; border:1px solid var(--line-strong); background:var(--solid); color:#fff; font-size:18px; cursor:pointer; display:none; align-items:center; justify-content:center; box-shadow:var(--shadow); z-index:60; transition:opacity .15s}
+#backToTop.show{display:flex}
+#backToTop:hover{opacity:.85}
 .toast{position:fixed; left:16px; bottom:16px; background:var(--solid); color:#fff; font-size:13px; font-weight:600; padding:10px 15px; border-radius:10px; box-shadow:var(--shadow); opacity:0; transform:translateY(8px); transition:opacity .18s, transform .18s; pointer-events:none; z-index:90; max-width:80vw}
 .toast.show{opacity:1; transform:translateY(0)}
 .toast.err{background:#C0341A}
@@ -347,12 +351,12 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
 
   <div class="dash-grid">
     <div class="dash-card">
-      <h3>Prochains anniversaires</h3>
-      <div id="bdayBox"><p class="mbr-empty">—</p></div>
-    </div>
-    <div class="dash-card">
       <h3>Actualités <span class="only-admin" id="memoEditHint" style="font-weight:500;font-size:11px;color:var(--sea)">(cliquez pour éditer)</span></h3>
       <div id="memoBox"><div class="memo-text" id="memoText"></div></div>
+    </div>
+    <div class="dash-card dash-card-sm">
+      <h3>Prochains anniversaires</h3>
+      <div id="bdayBox"><p class="mbr-empty">—</p></div>
     </div>
   </div>
 
@@ -402,6 +406,7 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
   </footer>
 </div>
 
+<button id="backToTop" aria-label="Revenir en haut de la page" title="Revenir en haut">↑</button>
 <div class="ov" id="ov" role="dialog" aria-modal="true"><div class="modal" id="modal"></div></div>
 <div class="toast" id="toast"></div>
 
@@ -744,8 +749,16 @@ async function openMembersPanel(){
 }
 window.__resyncIndex=async function(){
   try{
-    const idx = MBR_LIST.map(m=>({uid:m.id, nom:m.nom, prenom:m.prenom, email:m.email}));
+    const idx = MBR_LIST.map(m=>{
+      const entry={uid:m.id, nom:m.nom, prenom:m.prenom, loginEmail:m.loginEmail||m.email};
+      if(m.naissance){
+        const [ny,nm,nd]=m.naissance.split("-").map(Number);
+        entry.jour=nd; entry.mois=nm; entry.annee=ny;
+      }
+      return entry;
+    });
     await savePublicIndex(idx);
+    renderBirthdays(idx);
     toast("Index des noms resynchronisé ("+idx.length+" membre"+(idx.length>1?"s":"")+").");
   }catch(e){ console.error(e); toast("Échec de la resynchronisation.",true); }
 };
@@ -870,7 +883,7 @@ window.__saveMember=async function(){
     await db.collection("membres").doc(uid).set(membre);
     const idx = await loadPublicIndex();
     const [ny,nm,nd] = naissance.split("-").map(Number);
-    idx.push({uid,nom,prenom,loginEmail,jour:nd,mois:nm});
+    idx.push({uid,nom,prenom,loginEmail,jour:nd,mois:nm,annee:ny});
     await savePublicIndex(idx);
     await sAuth.signOut();
     MBR_LIST.push(Object.assign({id:uid},membre));
@@ -932,15 +945,18 @@ function renderBirthdays(list){
   const withBday=(list||[]).filter(m=>m.jour&&m.mois);
   if(!withBday.length){ box.innerHTML=`<p class="mbr-empty">Aucune date enregistrée.</p>`; return; }
   const today=new Date(); today.setHours(0,0,0,0);
-  const MO=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+  const MO=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
   const withNext=withBday.map(m=>{
     let next=new Date(today.getFullYear(), m.mois-1, m.jour);
     if(next<today) next=new Date(today.getFullYear()+1, m.mois-1, m.jour);
     return {m,next};
   }).sort((a,b)=>a.next-b.next).slice(0,2);
-  box.innerHTML=withNext.map(({m,next})=>
-    `<div class="bday-item"><span class="d">${next.getDate()} ${MO[next.getMonth()]}</span><span>${esc(m.prenom)} ${esc(m.nom)}</span></div>`
-  ).join("");
+  box.innerHTML=withNext.map(({m,next})=>{
+    const initiale=(m.nom||"").trim().charAt(0).toUpperCase();
+    const age = m.annee ? (next.getFullYear()-m.annee) : null;
+    const ageTxt = age!=null ? `${age} ans ` : "";
+    return `<div class="bday-item"><span>${esc(m.prenom)} ${esc(initiale)}${initiale?".":""} — ${ageTxt}le ${next.getDate()} ${MO[next.getMonth()]}</span></div>`;
+  }).join("");
 }
 
 /* ---------- Actualités (texte libre, éditable par les admins) ---------- */
@@ -1154,6 +1170,13 @@ document.getElementById("sportsJumpBtn").onclick=function(){
   const el=document.querySelector(".repertoire");
   if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
 };
+
+/* ---------- Retour en haut de page ---------- */
+const backToTopBtn=document.getElementById("backToTop");
+window.addEventListener("scroll",()=>{
+  backToTopBtn.classList.toggle("show", window.scrollY>400);
+});
+backToTopBtn.onclick=()=>window.scrollTo({top:0, behavior:"smooth"});
 document.getElementById("membersBtn").onclick=openMembersPanel;
 
 
