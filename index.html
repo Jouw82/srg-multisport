@@ -951,10 +951,10 @@ async function resetMemberPassword(id){
 function fillMemberForm(id){
   const m=MBR_LIST.find(x=>x.id===id); if(!m) return;
   MBR_EDIT_ID=id;
-  document.getElementById("m-nom").value=m.nom||""; document.getElementById("m-nom").disabled=true;
-  document.getElementById("m-prenom").value=m.prenom||""; document.getElementById("m-prenom").disabled=true;
-  document.getElementById("m-naissance").value=m.naissance||""; document.getElementById("m-naissance").disabled=true;
-  document.getElementById("m-email").value=m.email||""; document.getElementById("m-email").disabled=true;
+  document.getElementById("m-nom").value=m.nom||"";
+  document.getElementById("m-prenom").value=m.prenom||"";
+  document.getElementById("m-naissance").value=m.naissance||"";
+  document.getElementById("m-email").value=m.email||"";
   document.getElementById("m-tel").value=m.tel||"";
   document.getElementById("m-multi").checked=!!m.multisports;
   document.getElementById("m-hand").checked=!!m.handloisir;
@@ -962,7 +962,7 @@ function fillMemberForm(id){
   document.getElementById("mbrSaveBtn").textContent="Enregistrer les modifications";
   document.getElementById("mbrCancelBtn").style.display="inline-flex";
   document.getElementById("mbrErr").textContent="";
-  document.getElementById("mbrPwBox").innerHTML="";
+  document.getElementById("mbrPwBox").innerHTML=`<p class="hint">Corriger le nom ou la date de naissance générera automatiquement un nouveau mot de passe pour cette personne.</p>`;
   document.getElementById("m-nom").scrollIntoView({block:"center"});
 }
 window.__cancelMemberEdit=function(){
@@ -996,16 +996,42 @@ window.__saveMember=async function(){
       errBox.textContent="Impossible : c'est le dernier chef admin. Attribuez d'abord ce rôle à quelqu'un d'autre.";
       return;
     }
+    const m=MBR_LIST.find(x=>x.id===MBR_EDIT_ID);
+    if(!m){ errBox.textContent="Membre introuvable."; return; }
+    const identityChanged = (nom!==m.nom) || (naissance!==m.naissance);
+    const saveBtn=document.getElementById("mbrSaveBtn");
+    let newPwGen = m.pwGen||0, newPw=null;
     try{
-      await db.collection("membres").doc(MBR_EDIT_ID).update({tel, multisports:multi, handloisir:hand, role});
-      const m=MBR_LIST.find(x=>x.id===MBR_EDIT_ID);
-      if(m) Object.assign(m,{tel,multisports:multi,handloisir:hand,role});
+      if(identityChanged){
+        saveBtn.disabled=true; saveBtn.textContent="Mise à jour du mot de passe…";
+        const oldPw = currentPassword(m);
+        const sAuth = getSecondaryAuth();
+        await sAuth.signInWithEmailAndPassword(m.loginEmail||m.email, oldPw);
+        newPwGen = 0;
+        newPw = currentPassword({nom, naissance, pwGen:0});
+        await sAuth.currentUser.updatePassword(newPw);
+        await sAuth.signOut();
+      }
+      const patch={nom, prenom, naissance, email, tel, multisports:multi, handloisir:hand, role, pwGen:newPwGen};
+      await db.collection("membres").doc(MBR_EDIT_ID).update(patch);
+      Object.assign(m, patch);
       const idx = await loadPublicIndex();
       const entry = idx.find(x=>x.uid===MBR_EDIT_ID);
-      if(entry){ entry.multisports=multi; entry.handloisir=hand; await savePublicIndex(idx); }
+      if(entry){
+        entry.nom=nom; entry.prenom=prenom; entry.multisports=multi; entry.handloisir=hand;
+        if(naissance){ const [ny,nm,nd]=naissance.split("-").map(Number); entry.jour=nd; entry.mois=nm; entry.annee=ny; }
+        await savePublicIndex(idx);
+      }
       __cancelMemberEdit(); renderMembersList();
+      if(identityChanged){
+        document.getElementById("mbrPwBox").innerHTML = `<div class="pw-reveal">Nom et/ou date de naissance corrigés pour ${esc(prenom)} ${esc(nom)}. Nouveau mot de passe : <b>${esc(newPw)}</b><br>L'ancien ne fonctionne plus — communiquez-lui le nouveau.</div>`;
+      }
       toast("Membre mis à jour.");
-    }catch(e){ console.error(e); errBox.textContent="Échec de l'enregistrement."; }
+    }catch(e){
+      console.error(e);
+      errBox.textContent = "Échec de l'enregistrement : " + (e && e.code ? e.code : (e && e.message ? e.message : "erreur inconnue"));
+    }
+    saveBtn.disabled=false; saveBtn.textContent="Enregistrer les modifications";
     return;
   }
 
