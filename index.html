@@ -338,7 +338,14 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
   .dcell{width:auto}
   tr.mrow{border:0 !important; background:transparent; margin:6px 0} tr.mrow td{padding:0}
   .topbar-wrap{padding:10px 16px}
+  /* Le menu Profil ne doit plus dépendre de la position du bouton (qui passe à gauche sur mobile) :
+     il occupe la largeur de l'écran, sous le bouton (--dd-top posé en JS), et défile au doigt. */
+  .profileDropdown{position:fixed; left:16px; right:16px; width:auto; max-width:none; top:var(--dd-top,64px);
+    max-height:calc(100vh - var(--dd-top,64px) - 16px); max-height:calc(100dvh - var(--dd-top,64px) - 16px);
+    overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch}
+  .name-pick{max-height:45vh; max-height:45dvh}
 }
+.name-pick{overscroll-behavior:contain; -webkit-overflow-scrolling:touch; touch-action:pan-y}
 @media print{ .ticket,.chip.add,.topbar,.toast,footer{display:none} body{background:#fff} tr{break-inside:avoid} }
 </style>
 </head>
@@ -725,10 +732,17 @@ firebase.auth().onAuthStateChanged(async (user)=>{
 
 /* ---------- Connexion / profil en menu déroulant sous le bouton ---------- */
 function closeProfileDropdown(){ document.getElementById("profileDropdown").classList.remove("open"); }
+// Sur mobile le menu est en position fixe : on le cale juste sous le bouton Profil (la topbar étant collante, ça ne bouge pas au scroll).
+function positionProfileDropdown(){
+  const r=document.getElementById("profileBtn").getBoundingClientRect();
+  document.getElementById("profileDropdown").style.setProperty("--dd-top", Math.round(r.bottom+10)+"px");
+}
+window.addEventListener("resize",()=>{ if(document.getElementById("profileDropdown").classList.contains("open")) positionProfileDropdown(); });
 function openProfileBtn(){
   const dd=document.getElementById("profileDropdown");
   if(dd.classList.contains("open")){ closeProfileDropdown(); return; }
   PENDING_AFTER_LOGIN=null; // un clic direct sur "Se connecter" n'est jamais lié à une action en attente
+  positionProfileDropdown();
   dd.classList.add("open");
   if(CURRENT_MEMBRE) renderProfileDropdown(); else renderLoginDropdown();
 }
@@ -1312,6 +1326,7 @@ let PENDING_AFTER_LOGIN=null;
 function requireLogin(next){
   PENDING_AFTER_LOGIN=next;
   const dd=document.getElementById("profileDropdown");
+  positionProfileDropdown();
   dd.classList.add("open");
   renderLoginDropdown();
 }
