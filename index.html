@@ -206,7 +206,14 @@ tbody tr.past .note{color:var(--flame) !important}
 .role-badge.adm{background:var(--gold-soft); color:#8a5a12}
 
 
-.membersRow{margin-bottom:12px}
+.membersRow{margin-bottom:12px; display:flex; gap:10px; flex-wrap:wrap}
+.sms-row{display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); font-size:14px; cursor:pointer}
+.sms-row input{width:16px; height:16px; accent-color:var(--sea); flex:none}
+.sms-row .tel{margin-left:auto; color:var(--ink-soft); font-size:12.5px; white-space:nowrap}
+.sms-row.disabled{opacity:.5; cursor:default}
+.sms-count{font-size:12px; color:var(--ink-faint); text-align:right; margin-top:4px}
+.sms-count.full{color:#C0341A; font-weight:600}
+#smsList{overscroll-behavior:contain; -webkit-overflow-scrolling:touch}
 .mbr-list{margin-top:18px; max-height:240px; overflow:auto; border-top:1px solid var(--line)}
 .mbr-row{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px}
 .pub-row{padding:7px 0; font-size:14px}
@@ -403,6 +410,7 @@ footer{border-top:1px solid var(--line); padding:26px 0 60px; color:var(--ink-fa
 
   <div class="membersRow">
     <button type="button" class="btn adminRoleOnly" id="membersBtn">Gestion des membres</button>
+    <button type="button" class="btn adminRoleOnly" id="smsBtn">SMS</button>
   </div>
   <div class="cal-head">
     <div class="ch-left">
@@ -1399,6 +1407,75 @@ window.addEventListener("scroll",()=>{
 });
 backToTopBtn.onclick=()=>window.scrollTo({top:0, behavior:"smooth"});
 document.getElementById("membersBtn").onclick=openMembersPanel;
+
+/* ---------- SMS groupé (admin) ---------- */
+// Pas de backend : on ouvre l'application SMS du téléphone avec destinataires et message pré-remplis,
+// l'admin n'a plus qu'à appuyer sur Envoyer (le SMS part de son propre numéro, sans coût pour le club).
+const SMS_MAX=100;
+function normTel(t){
+  let n=(t||"").replace(/[^\d+]/g,"");
+  if(/^0\d{9}$/.test(n)) n="+33"+n.slice(1);
+  return n.length>=8 ? n : "";
+}
+function smsHref(nums, body){
+  const b=encodeURIComponent(body);
+  if(/iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent)) return `sms:/open?addresses=${nums.join(",")}&body=${b}`;
+  return `sms:${nums.join(",")}?body=${b}`;
+}
+async function openSmsPanel(){
+  openModal(`<div class="mhead"><h3>Envoyer un SMS</h3><button class="x" onclick="__close()" aria-label="Fermer">✕</button></div>
+    <div class="check-row" style="margin-top:4px">
+      <label><input type="checkbox" id="sms-multi"> Tout Multisports</label>
+      <label><input type="checkbox" id="sms-hand"> Tout Hand Loisir</label>
+    </div>
+    <div class="mbr-list" id="smsList"><p class="mbr-empty">Chargement…</p></div>
+    <div class="field"><label>Message</label><textarea id="sms-msg" rows="3" maxlength="${SMS_MAX}" placeholder="Ex. Séance annulée ce mardi, gymnase fermé."></textarea>
+      <div class="sms-count" id="smsCount">0/${SMS_MAX}</div></div>
+    <div class="err" id="smsErr"></div>
+    <div class="mactions"><button class="btn primary" id="smsSendBtn" onclick="__sendSms()">Ouvrir dans l'app SMS</button><button class="btn" onclick="__close()">Annuler</button></div>
+    <p class="hint">Le message s'ouvre dans l'application SMS de votre téléphone, destinataires et texte déjà remplis : il ne reste qu'à appuyer sur Envoyer. Il part de votre propre numéro.</p>`);
+  const msg=document.getElementById("sms-msg"), cnt=document.getElementById("smsCount");
+  msg.addEventListener("input",()=>{ cnt.textContent=`${msg.value.length}/${SMS_MAX}`; cnt.classList.toggle("full", msg.value.length>=SMS_MAX); });
+  await loadMembresList();
+  renderSmsList();
+  [["sms-multi","multi"],["sms-hand","hand"]].forEach(([id,key])=>{
+    document.getElementById(id).onchange=(e)=>{
+      document.querySelectorAll(`#smsList input[data-${key}="1"]`).forEach(i=>i.checked=e.target.checked);
+      updateSmsBtn();
+    };
+  });
+}
+function renderSmsList(){
+  const box=document.getElementById("smsList"); if(!box) return;
+  if(!MBR_LIST.length){ box.innerHTML=`<p class="mbr-empty">Aucun membre enregistré pour l'instant.</p>`; return; }
+  const rows=MBR_LIST.slice().sort((a,b)=>(a.nom||"").localeCompare(b.nom||"","fr"));
+  box.innerHTML=rows.map(m=>{
+    const tel=normTel(m.tel);
+    return tel
+      ? `<label class="sms-row"><input type="checkbox" data-tel="${esc(tel)}" data-multi="${m.multisports?1:0}" data-hand="${m.handloisir?1:0}">${esc(m.prenom)} ${esc(m.nom)}<span class="tel">${esc(m.tel)}</span></label>`
+      : `<div class="sms-row disabled"><input type="checkbox" disabled>${esc(m.prenom)} ${esc(m.nom)}<span class="tel">pas de numéro</span></div>`;
+  }).join("");
+  box.querySelectorAll("input[data-tel]").forEach(i=>i.onchange=updateSmsBtn);
+  updateSmsBtn();
+}
+function smsSelectedNums(){
+  return [...new Set([...document.querySelectorAll("#smsList input[data-tel]:checked")].map(i=>i.dataset.tel))];
+}
+function updateSmsBtn(){
+  const b=document.getElementById("smsSendBtn"); if(!b) return;
+  const n=smsSelectedNums().length;
+  b.textContent = n ? `Ouvrir dans l'app SMS (${n})` : "Ouvrir dans l'app SMS";
+}
+window.__sendSms=function(){
+  const nums=smsSelectedNums();
+  const msg=document.getElementById("sms-msg").value.trim();
+  const err=document.getElementById("smsErr");
+  if(!nums.length){ err.textContent="Cochez au moins un destinataire."; return; }
+  if(!msg){ err.textContent="Le message est vide."; return; }
+  err.textContent="";
+  window.location.href=smsHref(nums, msg);
+};
+document.getElementById("smsBtn").onclick=openSmsPanel;
 
 
 /* ---------- Sondage d'activités ---------- */
