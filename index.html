@@ -172,7 +172,6 @@ tbody tr.past .lieu,tbody tr.past .aperoBadge,tbody tr.past .todayTag{opacity:.7
 .dash-card-sm h3{font-size:12px; margin-bottom:8px}
 .bday-item{padding:6px 0; font-size:13px; color:var(--ink)}
 .bday-name{font-weight:700; color:var(--flame)}
-.bday-age{font-weight:700}
 .memo-text{font-size:14px; color:var(--ink); white-space:pre-wrap; line-height:1.5; min-height:20px}
 .memo-text:empty::before{content:"Aucune actualité pour l'instant."; color:var(--ink-faint); font-style:italic}
 .memo-date{font-weight:500; font-size:11px; color:#000; text-transform:none; letter-spacing:0}
@@ -1141,9 +1140,7 @@ function renderBirthdays(list){
   }).sort((a,b)=>a.next-b.next).slice(0,2);
   box.innerHTML=withNext.map(({m,next})=>{
     const initiale=(m.nom||"").trim().charAt(0).toUpperCase();
-    const age = m.annee ? (next.getFullYear()-m.annee) : null;
-    const ageTxt = age!=null ? `<span class="bday-age">${age} ans</span> ` : "";
-    return `<div class="bday-item"><span class="bday-name">${esc(m.prenom)} ${esc(initiale)}${initiale?".":""}</span> — ${ageTxt}le ${next.getDate()} ${MO[next.getMonth()]}</div>`;
+    return `<div class="bday-item"><span class="bday-name">${esc(m.prenom)} ${esc(initiale)}${initiale?".":""}</span> — le ${next.getDate()} ${MO[next.getMonth()]}</div>`;
   }).join("");
 }
 
